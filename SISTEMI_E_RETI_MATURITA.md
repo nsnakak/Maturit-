@@ -15,6 +15,8 @@ completata con definizioni, esempi, schemi e collegamenti per l'esame orale.
 
 ## MODULO I - Richiami allo strato di trasporto
 
+### UNITA 1 - Il livello di trasporto e il protocollo UDP
+
 ### Obiettivo del modulo
 
 Ripassare il ruolo dello strato di trasporto nel modello TCP/IP, con particolare attenzione
@@ -35,6 +37,11 @@ Lo strato di trasporto mette in comunicazione processi applicativi presenti su h
 Lavora sopra lo strato di rete e permette alle applicazioni di scambiarsi dati usando le
 porte, che identificano i servizi in esecuzione su una macchina.
 
+Il livello di rete realizza una comunicazione logica tra host, cioe tra macchine. Il livello di
+trasporto realizza invece una comunicazione logica tra processi, cioe tra programmi in
+esecuzione sugli host. Per questo motivo non basta conoscere l'indirizzo IP del computer:
+serve anche sapere a quale applicazione devono essere consegnati i dati.
+
 UDP e TCP rappresentano due modi diversi di gestire la comunicazione:
 
 - UDP e connectionless: non stabilisce una connessione prima dell'invio, non garantisce
@@ -48,17 +55,244 @@ Il three-way handshaking e la procedura con cui TCP apre una connessione:
 2. il server risponde con SYN-ACK;
 3. il client conferma con ACK.
 
+### Servizio e protocollo
+
+Nel modello a livelli bisogna distinguere servizio e protocollo.
+
+Un servizio e l'insieme delle operazioni che un livello mette a disposizione del livello
+superiore. Un protocollo e invece l'insieme delle regole che stabiliscono formato e
+significato dei messaggi scambiati tra entita dello stesso livello su macchine diverse.
+
+Le entita di livello usano i protocolli per realizzare i servizi. Per esempio, il livello di
+trasporto offre alle applicazioni la possibilita di inviare dati; per farlo usa protocolli come
+TCP e UDP.
+
+### SAP, porte e socket
+
+Le SAP, Service Access Point, sono punti logici attraverso cui un livello superiore accede ai
+servizi del livello inferiore. Nel livello di trasporto le SAP corrispondono alle porte.
+
+Le porte sono numeri a 16 bit, quindi vanno da 0 a 65535. Servono per distinguere le varie
+applicazioni attive su uno stesso host. Senza le porte, un computer potrebbe ricevere un
+pacchetto IP ma non saprebbe a quale programma consegnarlo.
+
+Le porte si dividono in tre gruppi:
+
+- Well Known Ports, da 0 a 1023: porte riservate ai servizi piu comuni, come HTTP, FTP,
+  SMTP, DNS e POP3.
+- Registered Ports, da 1024 a 49151: porte registrate o usate liberamente da molte
+  applicazioni.
+- Dynamic Ports, da 49152 a 65535: porte assegnate dinamicamente ai processi client.
+
+Alcune porte importanti:
+
+| Porta | Servizio | Protocollo |
+| --- | --- | --- |
+| 20 | FTP dati | TCP |
+| 21 | FTP controllo | TCP |
+| 23 | Telnet | TCP |
+| 25 | SMTP | TCP |
+| 53 | DNS | TCP/UDP |
+| 80 | HTTP | TCP |
+| 110 | POP3 | TCP |
+
+La combinazione tra indirizzo IP e numero di porta prende il nome di socket. Un socket
+identifica un punto di accesso alla comunicazione:
+
+- socket del mittente: indirizzo IP sorgente + porta sorgente;
+- socket del destinatario: indirizzo IP destinazione + porta destinazione.
+
+Una comunicazione tra due processi puo essere identificata dalle due coppie
+`IP:porta`, una del mittente e una del destinatario. Per esempio, un client puo usare la
+porta locale 5678 per collegarsi al server web `90.35.101.10:80`.
+
+### Multiplexing e demultiplexing
+
+Una delle funzioni principali del livello di trasporto e la multiplazione/demultiplazione.
+
+Il multiplexing avviene sul mittente: il livello di trasporto raccoglie dati provenienti da
+applicazioni diverse, li inserisce in segmenti e aggiunge le intestazioni necessarie, tra cui
+le porte.
+
+Il demultiplexing avviene sul destinatario: il livello di trasporto riceve i segmenti, legge i
+numeri di porta e consegna i dati al processo corretto.
+
+Esempio: un utente puo navigare sul web e scaricare la posta nello stesso momento. I dati
+arrivano allo stesso indirizzo IP, ma vengono consegnati ad applicazioni diverse grazie ai
+numeri di porta.
+
+Puo anche accadere che due client diversi usino la stessa porta sorgente per collegarsi allo
+stesso server. Non e un problema, perche il server distingue le connessioni considerando
+anche gli indirizzi IP sorgenti.
+
+### Servizi affidabili e inaffidabili
+
+Un servizio affidabile assicura che tutti i dati inviati arrivino al destinatario. Per ottenere
+questa garanzia usa meccanismi come ACK, ritrasmissioni, controllo dell'ordine e controllo
+degli errori. Questi meccanismi aumentano pero l'overhead, cioe il lavoro aggiuntivo e i
+dati di controllo necessari.
+
+Un servizio inaffidabile non garantisce che i dati arrivino, ne che arrivino nello stesso
+ordine in cui sono stati inviati. Questo puo sembrare uno svantaggio, ma in alcuni casi e
+preferibile perche riduce i ritardi e rende la comunicazione piu veloce.
+
+### Servizi connection oriented e connectionless
+
+I servizi connection oriented seguono il modello della telefonata:
+
+1. si stabilisce una connessione;
+2. si scambiano dati;
+3. si chiude la connessione.
+
+TCP appartiene a questa categoria. E connesso e affidabile: crea una connessione logica,
+controlla la consegna dei dati e ricompone il flusso informativo nell'ordine corretto.
+
+I servizi connectionless seguono il modello della posta ordinaria:
+
+- ogni pacchetto viaggia indipendentemente dagli altri;
+- pacchetti con stesso mittente e destinatario possono seguire percorsi diversi;
+- possono arrivare in ordine diverso;
+- alcuni pacchetti possono anche non arrivare.
+
+UDP appartiene a questa categoria. Non stabilisce una connessione e non garantisce la
+consegna, ma e semplice e veloce.
+
+### Primitive del livello di trasporto
+
+Per accedere ai servizi di un livello si usano funzioni di base chiamate primitive. Ogni
+primitiva puo essere vista come una richiesta o una segnalazione tra chi usa il servizio e chi
+lo fornisce.
+
+I quattro metodi fondamentali sono:
+
+- request: il service user richiede un servizio;
+- indication: il service provider segnala che e arrivata una richiesta;
+- response: il service user risponde alla richiesta;
+- confirm: il service provider conferma l'esito della richiesta.
+
+In un servizio connection oriented si possono avere primitive come:
+
+1. `connect.request()`;
+2. `connect.indication()`;
+3. `connect.response()`;
+4. `connect.confirm()`;
+5. `data.request()`;
+6. `data.indication()`;
+7. `disconnect.request()`;
+8. `disconnect.indication()`.
+
+### Client, server e buffering
+
+Nell'architettura client-server, il server offre un servizio e resta in ascolto su una porta,
+mentre il client richiede quel servizio.
+
+Quando un processo viene associato a una porta, il sistema operativo puo collegarlo a due
+code: una di ingresso e una di uscita. Questa funzione prende il nome di buffering e serve a
+gestire temporaneamente i dati in arrivo e in partenza.
+
+### Servizi offerti dal livello di trasporto
+
+Il livello di trasporto puo offrire diversi servizi:
+
+- gestione della connessione: apertura e chiusura della connessione quando necessario;
+- consegna in ordine corretto: riordino dei pacchetti prima di passarli all'applicazione;
+- controllo degli errori: verifica dei dati ricevuti;
+- trasferimento affidabile: ritrasmissione dei pacchetti persi;
+- controllo di flusso: evita che un host veloce saturi un host piu lento;
+- controllo di congestione: adatta la velocita di trasmissione allo stato della rete;
+- multiplexing e demultiplexing: separazione dei flussi tramite le porte.
+
+Non tutti i protocolli offrono tutti questi servizi. TCP ne offre molti; UDP offre solo un
+insieme minimo di funzioni.
+
+### Qualita del servizio, QoS
+
+La qualita del servizio, o QoS, indica il livello di prestazioni richiesto da una comunicazione.
+Puo essere descritta da parametri come:
+
+- ritardo massimo;
+- velocita di consegna;
+- tasso di errore;
+- probabilita di fallimento della connessione.
+
+Le esigenze cambiano in base all'applicazione. Per una e-mail un ritardo anche elevato puo
+essere accettabile; per streaming audio/video o videoconferenze il ritardo deve essere molto
+basso.
+
+### Il protocollo UDP
+
+UDP, User Datagram Protocol, fornisce un metodo per spedire dati senza stabilire prima
+una connessione con il destinatario. E quindi un protocollo connectionless e inaffidabile.
+
+Le sue caratteristiche principali sono:
+
+- e veloce, perche ha un header ridotto e non gestisce connessioni;
+- supporta trasmissioni broadcast e multicast;
+- non garantisce consegna, ordine o ritrasmissione;
+- usa le porte per multiplexing e demultiplexing;
+- rileva alcuni errori tramite checksum.
+
+UDP viene usato quando la velocita e piu importante dell'affidabilita assoluta, per esempio
+in streaming audio/video, comunicazioni real-time, DNS e altri servizi in cui una
+ritrasmissione tardiva sarebbe poco utile.
+
+### Funzionamento di UDP
+
+Il mittente conosce in anticipo indirizzo IP e porta del destinatario. Crea un segmento UDP,
+lo incapsula in un datagramma IP e lo invia.
+
+Quando il destinatario riceve il datagramma, il livello IP estrae il segmento UDP e lo passa
+al livello di trasporto. UDP legge la porta di destinazione:
+
+- se la porta e in ascolto, i dati vengono consegnati all'applicazione;
+- se la porta non e in ascolto, puo essere inviato al mittente un messaggio ICMP di tipo
+  `port unreachable`.
+
+UDP non recupera gli errori: se un segmento e danneggiato, in alcune implementazioni
+viene scartato, in altre puo essere consegnato all'applicazione con segnalazione dell'errore.
+
+### Struttura del segmento UDP
+
+Il segmento UDP ha un header molto semplice, lungo 8 byte. I campi sono:
+
+| Campo | Dimensione | Significato |
+| --- | --- | --- |
+| Source Port | 16 bit | Porta del mittente |
+| Destination Port | 16 bit | Porta del destinatario |
+| Length | 16 bit | Lunghezza totale di header + dati |
+| Checksum | 16 bit | Controllo degli errori |
+
+Dopo l'header si trovano i dati ricevuti dal livello applicativo.
+
+Gli indirizzi IP non sono presenti nell'header UDP perche sono gia contenuti nell'header IP
+che incapsula il segmento.
+
+### Checksum UDP
+
+Il checksum serve per rilevare errori nel segmento. Viene calcolato dal mittente e
+ricontrollato dal destinatario.
+
+Nel calcolo viene usata anche una pseudo-intestazione che contiene informazioni prese dal
+livello IP, come gli indirizzi IP sorgente e destinazione. Questo permette di verificare non
+solo il contenuto UDP, ma anche che il segmento sia arrivato tra gli host corretti.
+
+Il checksum rileva errori, ma UDP non effettua ritrasmissioni automatiche. L'eventuale
+recupero deve essere gestito dall'applicazione, se necessario.
+
 ### Parole chiave
 
-Segmento, porta, socket, affidabilita, ACK, ritrasmissione, UDP, TCP, SYN, ACK,
-three-way handshaking.
+Segmento, PDU, SAP, porta, socket, multiplexing, demultiplexing, buffering,
+affidabilita, servizio inaffidabile, connection oriented, connectionless, ACK,
+ritrasmissione, QoS, UDP, TCP, checksum, ICMP port unreachable, SYN, three-way
+handshaking.
 
 ### Da integrare con le presentazioni
 
-- Struttura dell'header TCP e UDP.
-- Differenze pratiche tra TCP e UDP.
-- Esempi di servizi che usano TCP o UDP.
-- Eventuali esercizi o domande tipiche d'esame.
+- Struttura dell'header TCP.
+- Three-way handshaking in dettaglio.
+- Chiusura della connessione TCP.
+- Controllo di flusso e controllo di congestione in TCP.
+- Esempi completi di domande tipiche d'esame.
 
 ---
 
@@ -467,7 +701,8 @@ progettazione di rete.
 
 ## Materiali da aggiungere modulo per modulo
 
-- Presentazione Modulo I: da integrare.
+- Presentazione Modulo I - Trasporto e UDP: integrata.
+- Presentazione Modulo I - TCP e three-way handshaking: da integrare, se presente.
 - Presentazione Modulo II: da integrare.
 - Presentazione Modulo III: da integrare.
 - Presentazione Modulo IV: da integrare.
