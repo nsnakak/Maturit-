@@ -525,10 +525,306 @@ DHCP semplifica la configurazione dei client perche assegna parametri come indir
 subnet mask, gateway predefinito e server DNS. DNS, invece, e fondamentale per rendere
 utilizzabili i nomi simbolici al posto degli indirizzi numerici.
 
+### UNITA 1 - Il livello delle applicazioni
+
+Un'applicazione di rete e un insieme di programmi che lavorano su piu computer collegati
+tra loro tramite Internet o tramite una rete locale. Per questo viene anche chiamata
+applicazione distribuita.
+
+Nel modello ISO/OSI il livello applicativo e quello piu vicino all'utente finale: comprende i
+protocolli che permettono alle applicazioni di comunicare con applicazioni remote. Esempi
+di applicazioni di rete sono posta elettronica, Web, messaggistica istantanea, accesso a
+terminali remoti, condivisione file P2P, streaming, telefonia via Internet e videoconferenza.
+
+Un processo e un programma in esecuzione su un host. Processi sullo stesso host possono
+comunicare tramite meccanismi del sistema operativo; processi su host diversi comunicano
+invece attraverso la rete, usando protocolli di livello applicazione e i servizi degli strati
+inferiori.
+
+L'agente utente, o user agent, e l'interfaccia tra l'utente e l'applicazione di rete. Esempi:
+
+- browser web per il WWW;
+- client di posta per le e-mail;
+- lettore audio/video per lo streaming.
+
+### Protocolli del livello applicazione
+
+Un protocollo applicativo stabilisce:
+
+- il formato dei messaggi scambiati;
+- il significato dei messaggi;
+- le azioni da eseguire quando un messaggio viene inviato o ricevuto;
+- il modo in cui vengono usati i servizi del livello di trasporto.
+
+Tra i protocolli applicativi piu importanti ci sono:
+
+- HTTP e HTTPS per il Web;
+- FTP, FTPS e SFTP per il trasferimento di file;
+- SMTP, POP3 e IMAP per la posta elettronica;
+- DNS per la risoluzione dei nomi;
+- DHCP per la configurazione automatica degli host;
+- Telnet e SSH per l'accesso remoto.
+
+### Architetture delle applicazioni di rete
+
+Quando si progetta un'applicazione di rete bisogna scegliere l'architettura, cioe il modo in
+cui sono organizzati i programmi che comunicano.
+
+#### Architettura client-server
+
+Nel modello client-server l'applicazione e divisa in due parti: client e server.
+
+Il server:
+
+- e di solito sempre attivo;
+- ha un indirizzo IP fisso o comunque raggiungibile;
+- fornisce un servizio ai client;
+- puo gestire molti client contemporaneamente;
+- puo essere realizzato tramite piu macchine, cluster o server farm.
+
+Il client:
+
+- richiede un servizio al server;
+- puo contattare il server quando serve;
+- puo avere un indirizzo IP dinamico;
+- normalmente non comunica direttamente con gli altri client.
+
+Un esempio tipico e il WWW: il browser e il client, mentre il web server contiene pagine e
+risorse che vengono inviate su richiesta.
+
+Quando le richieste sono molte, un solo server puo non bastare. In questi casi si usano
+server virtuali, cluster o server farm per distribuire il carico e garantire continuita del
+servizio. Per l'utente il servizio puo apparire come un unico hostname, anche se dietro ci
+sono piu indirizzi IP e piu server.
+
+#### Architettura peer-to-peer, P2P
+
+Nel modello peer-to-peer non esiste necessariamente un server centrale: ogni nodo, detto
+peer, puo fornire e ricevere risorse. I dispositivi comunicano direttamente tra loro e la rete
+puo adattarsi dinamicamente.
+
+I vantaggi principali sono:
+
+- scalabilita, perche il carico viene distribuito tra i peer;
+- ridondanza, perche una risorsa puo essere presente su piu nodi;
+- minore dipendenza da un server unico.
+
+Gli svantaggi principali sono:
+
+- minore controllo;
+- gestione della sicurezza piu complessa;
+- maggiore difficolta nel garantire affidabilita e qualita del servizio.
+
+Un esempio e BitTorrent: i file vengono divisi in piccoli pezzi e ogni peer scarica parti del
+file mentre condivide le parti gia ricevute. In questo modo il carico sul server originario si
+riduce e il download puo diventare piu veloce.
+
+#### P2P centralizzato e ibrido
+
+Nel P2P centralizzato esiste un server centrale, spesso chiamato directory server, che non
+memorizza i file ma mantiene informazioni su quali peer possiedono certe risorse. I peer
+conservano i dati, comunicano al server cosa condividono e permettono ad altri peer di
+scaricare le risorse. Un esempio storico e Napster.
+
+Nel P2P ibrido alcuni nodi hanno un ruolo piu importante e diventano super-peer. Questi
+super-peer aiutano nella ricerca o nel coordinamento, mentre lo scambio dei dati puo
+avvenire tra peer. Esempi citati sono Skype ed eMule.
+
+### API e socket nel livello applicativo
+
+Per comunicare in rete, un programma usa delle API, Application Programming Interface.
+Nel caso delle applicazioni Internet, un concetto fondamentale e quello di socket.
+
+Una socket e un punto di comunicazione attraverso cui due processi, per esempio client e
+server, si scambiano messaggi. Lo sviluppatore controlla la parte applicativa, mentre il
+sistema operativo gestisce i dettagli del protocollo di trasporto, i buffer e le variabili della
+connessione.
+
+Il concetto di socket collega direttamente il livello applicativo al livello di trasporto:
+l'applicazione invia e riceve dati attraverso la socket, mentre TCP o UDP si occupano del
+trasporto effettivo.
+
+### Quale servizio di trasporto richiede un'applicazione?
+
+Le applicazioni non hanno tutte gli stessi bisogni. La scelta del protocollo di trasporto
+dipende dai requisiti del servizio.
+
+I requisiti principali sono:
+
+- perdita di dati: alcune applicazioni, come il trasferimento file, richiedono affidabilita al
+  100%; altre, come audio e video in tempo reale, possono tollerare piccole perdite;
+- temporizzazione: applicazioni come VoIP, giochi online e videoconferenze richiedono
+  ritardi bassi;
+- ampiezza di banda: applicazioni multimediali possono richiedere una banda minima,
+  mentre applicazioni elastiche, come la posta elettronica, usano la banda disponibile;
+- sicurezza: alcune applicazioni richiedono integrita, autenticazione o cifratura dei dati.
+
+Esempi:
+
+| Applicazione | Protocollo applicativo | Trasporto tipico |
+| --- | --- | --- |
+| Posta elettronica | SMTP | TCP |
+| Accesso remoto | Telnet/SSH | TCP |
+| Web | HTTP/HTTPS | TCP |
+| Trasferimento file | FTP | TCP |
+| Streaming multimediale | Protocolli proprietari o standard specifici | TCP o UDP |
+| Telefonia Internet | Protocolli VoIP | Tipicamente UDP |
+
+### Il World Wide Web
+
+Il World Wide Web, WWW, e l'insieme delle pagine e delle risorse collegate da link e
+accessibili tramite HTTP o HTTPS.
+
+Il funzionamento di base e client-server:
+
+1. l'utente inserisce un URL nel browser;
+2. il browser, cioe il client, invia una richiesta al web server;
+3. il server risponde inviando la risorsa richiesta;
+4. il browser interpreta il contenuto e lo visualizza.
+
+Una pagina web e composta da oggetti: spesso una pagina HTML iniziale e altri oggetti
+collegati, come immagini, fogli di stile, script o file multimediali.
+
+### Browser, web server, URI e URL
+
+Il browser e lo user agent del Web. Le sue funzioni principali sono:
+
+- instaurare una connessione TCP con il server;
+- inviare richieste per ottenere le risorse;
+- interpretare HTML e altri linguaggi lato client;
+- visualizzare il contenuto in modo comprensibile all'utente;
+- gestire la cache.
+
+La cache del browser e uno spazio su disco in cui vengono salvate copie di pagine,
+immagini e altri oggetti gia scaricati. Prima di richiedere una risorsa al server, il browser
+puo controllare se e gia disponibile in cache. Con il comando aggiorna/refresh l'utente puo
+forzare una nuova richiesta al server.
+
+Il web server e il software, in esecuzione su un server, che gestisce le richieste dei client e
+invia pagine o risorse web. Esempi di web server sono Apache, Nginx e IIS.
+
+Una risorsa su Internet viene identificata da un URI, Uniform Resource Identifier. Un URL,
+Uniform Resource Locator, e un tipo di URI che specifica dove si trova la risorsa e come
+raggiungerla. Tutti gli URL sono URI, ma non tutti gli URI sono URL.
+
+Esempio:
+
+`https://www.scuola.it/info/corsi.html`
+
+- `https`: protocollo usato;
+- `www.scuola.it`: nome dell'host;
+- `/info/corsi.html`: percorso e file della risorsa.
+
+### Il protocollo FTP
+
+FTP, File Transfer Protocol, e un protocollo applicativo usato per trasferire file tra
+computer collegati in rete. Permette di condividere file di testo o binari anche tra sistemi
+diversi.
+
+FTP usa TCP per garantire un trasferimento affidabile. La particolarita di FTP e che usa due
+connessioni TCP:
+
+- porta 21: canale di controllo, usato per comandi e risposte;
+- porta 20: canale dati, usato per il trasferimento dei file nella modalita attiva.
+
+Per usare FTP servono:
+
+- un FTP server, che mette a disposizione file e directory;
+- un FTP client, che permette all'utente di collegarsi, autenticarsi e trasferire file.
+
+Operazioni comuni:
+
+- download: copia di un file dal server al client;
+- upload: copia di un file dal client al server;
+- cancellazione di file;
+- creazione di directory;
+- visualizzazione e gestione delle cartelle remote.
+
+L'accesso puo essere autenticato, con username e password, oppure anonimo. L'accesso
+anonimo viene usato per download pubblici ma offre un livello di sicurezza basso.
+
+### FTP attivo e FTP passivo
+
+FTP puo funzionare in modalita attiva o passiva.
+
+Nella modalita attiva il client apre la connessione di controllo verso il server, ma poi e il
+server ad aprire la connessione dati verso il client. Questo puo creare problemi con i
+firewall lato client, perche il tentativo del server di aprire una connessione in ingresso puo
+essere bloccato.
+
+Per questo motivo oggi e spesso preferita la modalita passiva. In modalita passiva il client
+apre sia la connessione di controllo sia la connessione dati verso il server. Se anche il
+server ha un firewall, bisogna configurare un intervallo di porte, di solito superiori a 1024,
+per accettare le connessioni dati passive.
+
+### Sicurezza: FTP, FTPS e SFTP
+
+FTP tradizionale non cifra i dati. Questo significa che username, password, comandi,
+risposte e file possono essere intercettati tramite sniffing.
+
+Per aumentare la sicurezza si usano alternative cifrate:
+
+- FTPS: estende FTP aggiungendo cifratura SSL/TLS;
+- SFTP: servizio di trasferimento file basato su SSH, diverso da FTP ma usato con scopo
+  simile.
+
+FTPS protegge credenziali e dati tramite cifratura; l'algoritmo viene negoziato con il server
+e spesso i client mostrano un simbolo di lucchetto per indicare il trasferimento sicuro.
+
+| Tipo di accesso | Descrizione | Sicurezza |
+| --- | --- | --- |
+| Anonimo | Accesso senza credenziali personali, usato per download pubblici | Bassa |
+| Autenticato | Richiede username e password, con privilegi assegnati | Media |
+| Sicuro | FTPS o SFTP, con trasferimento cifrato | Alta |
+
+### Comandi FTP principali
+
+I comandi FTP vengono inviati come testo ASCII sul canale di controllo.
+
+| Comando | Significato |
+| --- | --- |
+| `USER username` | Invia il nome utente |
+| `PASS password` | Invia la password |
+| `LIST` o `ls` | Mostra i file della directory corrente |
+| `RETR file` o `get file` | Scarica un file dal server |
+| `STOR file` o `put file` | Carica un file sul server |
+| `cd directory` | Cambia directory remota |
+| `pwd` | Mostra la directory remota corrente |
+| `binary` | Imposta trasferimento binario |
+| `ascii` | Imposta trasferimento ASCII |
+| `quit` o `bye` | Chiude la connessione FTP |
+
+Esempi di codici di risposta:
+
+- 331: username corretto, password richiesta;
+- 125: connessione dati gia aperta, trasferimento in avvio;
+- 425: impossibile aprire la connessione dati;
+- 452: errore nella scrittura del file.
+
+### FTP in Packet Tracer
+
+In Packet Tracer una configurazione FTP tipica prevede:
+
+1. assegnare indirizzi IP a client, server e dispositivi di rete;
+2. configurare gateway e DNS sul server, se necessari;
+3. aprire il server e abilitare il servizio FTP;
+4. creare uno o piu utenti con permessi adeguati, per esempio lettura, scrittura,
+   cancellazione, rinomina e lista;
+5. dal PC client aprire il Command Prompt;
+6. digitare `ftp indirizzo_server`;
+7. inserire username e password;
+8. usare comandi come `put`, `get`, `ls`, `rename`, `quit`.
+
+Esercizio tipico: creare file su PC1, caricarli sul server FTP, rinominarli, accedere da PC2
+e scaricarli, verificando che siano presenti sul secondo PC.
+
 ### Parole chiave
 
-Client-server, DHCP, lease, HTTP, URL, FTP, SMTP, POP3, IMAP, MIME, DNS, record,
-risoluzione dei nomi.
+Applicazione distribuita, processo, user agent, protocollo applicativo, client-server,
+server farm, virtualizzazione, peer-to-peer, P2P centralizzato, P2P ibrido, super-peer,
+API, socket, HTTP, HTTPS, WWW, browser, web server, URI, URL, cache, FTP, FTPS,
+SFTP, upload, download, modalita attiva, modalita passiva, SMTP, POP3, IMAP, MIME,
+DHCP, lease, DNS, record, risoluzione dei nomi.
 
 ### Da integrare con le presentazioni
 
@@ -536,7 +832,7 @@ risoluzione dei nomi.
 - Metodi e codici di stato HTTP.
 - Differenze tra web mail, POP3 e IMAP.
 - Tipi di record DNS.
-- Esempi Packet Tracer su DHCP, DNS, FTP, SMTP/POP3 e WWW.
+- Esempi Packet Tracer su DHCP, DNS, SMTP/POP3 e WWW.
 
 ---
 
@@ -900,7 +1196,8 @@ progettazione di rete.
 
 - Presentazione Modulo I - Trasporto e UDP: integrata.
 - Presentazione Modulo I - Trasferimento affidabile e TCP: integrata.
-- Presentazione Modulo II: da integrare.
+- Presentazione Modulo II - Livello applicazioni, WWW e FTP: integrata.
+- Presentazione Modulo II - DHCP, HTTP dettagliato, posta e DNS: da integrare, se presenti.
 - Presentazione Modulo III: da integrare.
 - Presentazione Modulo IV: da integrare.
 - Presentazione Modulo V: da integrare.
