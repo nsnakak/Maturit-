@@ -1690,14 +1690,251 @@ canale non sicuro.
 La crittografia ibrida combina i vantaggi dei due approcci: usa la crittografia asimmetrica
 per scambiare una chiave e la crittografia simmetrica per cifrare i dati in modo efficiente.
 
+### UNITA 1 - Introduzione alla sicurezza e crittografia simmetrica
+
+Con la diffusione di Internet e dei servizi digitali e aumentata la quantita di dati scambiati
+in rete. Di conseguenza e aumentata anche la necessita di proteggerli da intercettazioni,
+modifiche e accessi non autorizzati.
+
+La sicurezza informatica comprende misure organizzative e tecnologiche che permettono a
+ogni utente autorizzato di accedere solo ai servizi e alle informazioni previste, nei modi e
+nei tempi stabiliti.
+
+Secondo la triade CIA, gli obiettivi principali della sicurezza sono:
+
+- Confidentiality, o segretezza: le informazioni devono essere accessibili solo a chi e
+  autorizzato;
+- Integrity, o integrita: i dati non devono essere modificati senza autorizzazione;
+- Availability, o disponibilita: gli utenti autorizzati devono poter accedere ai servizi quando
+  ne hanno bisogno.
+
+Ai tre obiettivi si aggiungono spesso:
+
+- autenticazione: confermare l'identita delle parti che comunicano;
+- non ripudio: impedire che il mittente possa negare di aver inviato un certo messaggio.
+
+### Minacce e attacchi
+
+Una minaccia e una potenziale azione o condizione che puo compromettere sicurezza,
+integrita o disponibilita di sistemi, reti o dati. Un attacco e un'azione concreta che viola la
+sicurezza.
+
+Gli attacchi possono essere:
+
+- passivi: intercettano o monitorano le comunicazioni senza modificarle;
+- attivi: modificano il flusso dei dati o creano un falso flusso.
+
+Esempi:
+
+| Attacco | Obiettivo colpito | Descrizione |
+| --- | --- | --- |
+| Eavesdropping | Segretezza | Intercettazione di informazioni riservate |
+| Tampering | Integrita | Modifica o sostituzione dei dati in transito |
+| Masquerading | Autenticita | Impersonificazione di un altro soggetto |
+| Denial of Service | Disponibilita | Uso eccessivo di risorse per rendere un servizio non disponibile |
+
+Un sistema sicuro non e un sistema impossibile da violare: significa che l'attacco viene reso
+molto piu difficile e costoso. Le misure di sicurezza devono essere proporzionate al valore
+delle risorse da proteggere.
+
+### Crittografia: concetti base
+
+La crittografia e l'insieme delle tecniche che permettono di trasformare un testo leggibile
+in un testo cifrato, e poi di riportarlo alla forma originale tramite decifratura.
+
+Gli elementi principali sono:
+
+- testo in chiaro, o plain-text: messaggio leggibile;
+- cifrario, o cipher: algoritmo usato per cifrare e decifrare;
+- chiave: parametro segreto usato dall'algoritmo;
+- crittogramma: messaggio cifrato.
+
+La cifratura applica un algoritmo al testo in chiaro usando una chiave. La decifratura usa
+la chiave corretta per recuperare il testo originale.
+
+Le tecniche di cifratura possono basarsi su:
+
+- sostituzione: ogni simbolo viene sostituito con un altro;
+- trasposizione: i simboli vengono riordinati senza cambiarli.
+
+### Principio di Kerckhoffs/Shannon
+
+Il principio di Kerckhoffs/Shannon afferma che la sicurezza di un sistema crittografico non
+deve dipendere dal segreto dell'algoritmo, ma solo dal segreto della chiave.
+
+In altre parole, anche se un attaccante conosce l'algoritmo usato, non deve riuscire a
+decifrare il messaggio senza possedere la chiave.
+
+Questo principio e alla base della crittografia moderna: gli algoritmi possono essere
+pubblici, studiati e verificati, mentre la chiave deve rimanere segreta.
+
+### Crittografia simmetrica
+
+La crittografia simmetrica, detta anche a chiave privata o a chiave segreta, usa la stessa
+chiave per cifrare e decifrare.
+
+Il mittente e il destinatario devono quindi conoscere la stessa chiave segreta. La robustezza
+del sistema dipende dalla forza dell'algoritmo e dalla segretezza della chiave.
+
+Condizioni necessarie:
+
+- algoritmo crittografico robusto;
+- distribuzione sicura della chiave;
+- conservazione sicura della chiave da parte di mittente e destinatario.
+
+Vantaggi:
+
+- velocita elevata;
+- efficienza anche su grandi quantita di dati;
+- adatta alla cifratura di comunicazioni e file.
+
+Svantaggi:
+
+- problema dello scambio della chiave;
+- se la chiave viene scoperta, tutta la comunicazione e compromessa;
+- in una rete con molti utenti servono molte chiavi diverse.
+
+Il problema principale e quindi la distribuzione della chiave: mittente e destinatario devono
+concordarla tramite un canale sicuro, ma spesso proprio il canale sicuro non e disponibile.
+
+### Cifrari a flusso e cifrari a blocchi
+
+Gli algoritmi simmetrici si dividono principalmente in cifrari a flusso e cifrari a blocchi.
+
+I cifrari a flusso, o stream cipher, cifrano il messaggio bit per bit o byte per byte. Generano
+un flusso di bit pseudo-casuali, detto keystream, che viene combinato con il testo in chiaro,
+spesso tramite XOR.
+
+Caratteristiche dei cifrari a flusso:
+
+- elaborano i dati in modo continuo;
+- sono veloci;
+- sono adatti a trasmissioni in tempo reale, come audio e video;
+- richiedono un keystream sicuro e non prevedibile.
+
+Il keystream viene generato da un PRNG, Pseudorandom Number Generator, a partire da un
+seed segreto. Se destinatario e mittente hanno stesso algoritmo e stesso seed, possono
+generare lo stesso flusso e cifrare/decifrare correttamente.
+
+I cifrari a blocchi, o block cipher, dividono i dati in blocchi di lunghezza fissa e cifrano ogni
+blocco come un'unita. Gli algoritmi moderni usano piu round, cioe piu passaggi ripetuti,
+spesso con chiavi derivate da una chiave principale tramite un key schedule.
+
+Esempi:
+
+- DES e AES sono cifrari a blocchi;
+- Salsa20 e ChaCha20 sono cifrari a flusso.
+
+### Cifrari classici: Cesare, sostituzione, Vigenere, Vernam
+
+Il cifrario di Cesare e un semplice cifrario a sostituzione: ogni lettera viene sostituita con
+un'altra spostata di un certo numero di posizioni nell'alfabeto. Il valore dello spostamento
+e la chiave.
+
+Esempio: con chiave 3, A diventa D, B diventa E e cosi via. E un algoritmo molto debole,
+perche le chiavi possibili sono poche e puo essere attaccato facilmente.
+
+Il cifrario a sostituzione monoalfabetica generalizza Cesare: ogni lettera viene sostituita
+secondo un alfabeto cifrante arbitrario. Anche se le chiavi possibili sono molte, resta
+vulnerabile all'analisi statistica delle frequenze delle lettere.
+
+Il cifrario di Vigenere usa piu alfabeti cifranti e una parola chiave. La stessa lettera del
+testo in chiaro puo quindi essere cifrata in modi diversi a seconda della posizione. Fu
+considerato molto robusto per molto tempo, ma puo essere attaccato quando la chiave si
+ripete.
+
+Il cifrario di Vernam, o One Time Pad, usa una chiave:
+
+- completamente casuale;
+- lunga almeno quanto il messaggio;
+- usata una sola volta;
+- tenuta segreta.
+
+In queste condizioni e teoricamente inviolabile se l'attaccante conosce solo il testo cifrato.
+Il problema e pratico: generare, distribuire e conservare chiavi cosi lunghe e sicure e molto
+difficile.
+
+### Crittoanalisi e forza bruta
+
+La crittoanalisi studia tecniche per decifrare un messaggio senza conoscere la chiave.
+Spesso sfrutta caratteristiche statistiche del linguaggio, ripetizioni o debolezze
+dell'algoritmo.
+
+Un attacco a forza bruta prova tutte le chiavi possibili finche non trova quella corretta.
+La sua difficolta dipende dallo spazio delle chiavi: piu la chiave e lunga, piu combinazioni
+devono essere provate.
+
+Per questo nella crittografia moderna la lunghezza della chiave e fondamentale. Un
+algoritmo puo essere noto, ma deve avere uno spazio delle chiavi cosi grande da rendere
+impraticabile la ricerca esaustiva.
+
+### DES
+
+DES, Data Encryption Standard, e stato per molti anni uno degli algoritmi simmetrici a
+blocchi piu importanti.
+
+Per molto tempo e stato considerato sicuro, ma con l'aumento della potenza di calcolo la
+sua chiave e diventata troppo corta. Il problema principale di DES e proprio la lunghezza
+della chiave, che rende possibile un attacco a forza bruta con risorse sufficienti.
+
+Nel 1998 l'Electronic Frontier Foundation dimostro che DES poteva essere forzato in tempi
+pratici usando hardware dedicato. Per questo oggi DES non e considerato adeguato per la
+protezione moderna dei dati.
+
+### AES
+
+AES, Advanced Encryption Standard, conosciuto anche come Rijndael, e oggi uno degli
+algoritmi simmetrici piu usati.
+
+E un cifrario a blocchi con blocchi da 128 bit e chiavi da 128, 192 o 256 bit. E stato
+adottato dal NIST nel 2001 come standard per la cifratura simmetrica.
+
+AES e considerato robusto perche:
+
+- e veloce;
+- e efficiente;
+- resiste agli attacchi noti piu importanti;
+- ha chiavi abbastanza lunghe da rendere impraticabile la forza bruta.
+
+Il funzionamento interno usa piu round. Per AES con chiave a 128 bit si usano 10 round.
+Ogni round comprende trasformazioni come:
+
+- SubBytes: sostituzione non lineare dei byte;
+- ShiftRows: spostamento delle righe della matrice;
+- MixColumns: combinazione dei byte nelle colonne;
+- AddRoundKey: combinazione con la chiave del round tramite XOR.
+
+Non serve conoscere a memoria tutti i dettagli matematici: per l'esame e importante
+ricordare che AES e un cifrario simmetrico a blocchi moderno, molto piu sicuro di DES e
+usato in moltissimi sistemi reali.
+
+### Anticipazione: crittografia asimmetrica
+
+La crittografia simmetrica e efficiente, ma presenta il problema dello scambio della chiave.
+La crittografia asimmetrica nasce per affrontare questo problema usando una coppia di
+chiavi:
+
+- chiave pubblica, distribuibile a tutti;
+- chiave privata, conosciuta solo dal proprietario.
+
+Un messaggio cifrato con la chiave pubblica del destinatario puo essere decifrato solo con
+la sua chiave privata. Questo concetto verra approfondito con RSA, Diffie-Hellman, firma
+digitale e certificati.
+
 ### Parole chiave
 
-Cifratura, decifratura, chiave simmetrica, chiave pubblica, chiave privata, DES, AES, RSA,
-Diffie-Hellman, hash, firma digitale, certificato digitale, CA, PKI, PGP.
+CIA triad, segretezza, integrita, disponibilita, autenticazione, non ripudio, minaccia,
+attacco passivo, attacco attivo, eavesdropping, tampering, masquerading, DoS,
+crittografia, testo in chiaro, crittogramma, cifrario, chiave, Kerckhoffs, crittografia
+simmetrica, chiave segreta, cifrario a flusso, keystream, PRNG, seed, XOR, cifrario a
+blocchi, Cesare, Vigenere, Vernam, One Time Pad, crittoanalisi, forza bruta, DES, AES,
+chiave pubblica, chiave privata, RSA, Diffie-Hellman, hash, firma digitale, certificato
+digitale, CA, PKI, PGP.
 
 ### Da integrare con le presentazioni
 
-- Esempi semplici di cifratura simmetrica e asimmetrica.
+- Crittografia asimmetrica in dettaglio.
+- RSA e Diffie-Hellman.
 - Funzionamento della firma digitale passo per passo.
 - Differenza tra hash, cifratura e firma.
 - Catena di fiducia dei certificati digitali.
@@ -1968,10 +2205,11 @@ progettazione di rete.
 - Presentazione Modulo II - Livello applicazioni, WWW e FTP: integrata.
 - Presentazione Modulo II - Email, DNS e Telnet/SSH: integrata.
 - Presentazione Modulo II - Protocollo HTTP e cenni HTTPS: integrata.
-- Presentazione Modulo II - DHCP: da integrare, se presente.
+- Presentazione Modulo II - DHCP: non necessaria su richiesta.
 - Presentazione Modulo III - Virtual LAN: integrata.
 - Presentazione Modulo III - VTP e Inter-VLAN Routing: integrata.
-- Presentazione Modulo IV: da integrare.
+- Presentazione Modulo IV - Crittografia simmetrica, DES e AES: integrata.
+- Presentazione Modulo IV - Crittografia asimmetrica, hash, firma e certificati: da integrare, se presenti.
 - Presentazione Modulo V: da integrare.
 - Presentazione Modulo VI: da integrare.
 - Presentazione Modulo VII: da integrare.
