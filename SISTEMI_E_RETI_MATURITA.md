@@ -2539,6 +2539,299 @@ Dopo aver ricevuto HSTS, il browser trasforma automaticamente richieste `http://
 attaccante prova a mantenere la vittima su HTTP in chiaro mentre comunica in HTTPS con
 il server.
 
+### UNITA 3 - VPN, reti private virtuali
+
+Una VPN, Virtual Private Network, e una rete privata virtuale che permette a host o reti in
+sedi diverse di comunicare in modo sicuro usando una rete pubblica, come Internet.
+
+Una VPN deve garantire:
+
+- riservatezza: il traffico viene cifrato, per esempio con AES;
+- integrita: eventuali modifiche ai pacchetti vengono rilevate tramite hash o tag di
+  autenticazione;
+- autenticazione: solo utenti o dispositivi autorizzati possono entrare nel tunnel.
+
+In passato, per collegare sedi aziendali lontane si usavano linee dedicate, costose ma con
+prestazioni prevedibili. Le VPN riducono i costi usando Internet come infrastruttura di
+trasporto, ma richiedono cifratura, autenticazione e tunneling per mantenere la sicurezza.
+
+Esempio: un dipendente in aeroporto si collega alla VPN aziendale tramite Wi-Fi pubblico.
+Il traffico viene cifrato fino al VPN gateway dell'azienda e l'utente puo accedere alle
+risorse interne come se fosse in ufficio.
+
+### Accesso a Internet con VPN
+
+Quando si usa una VPN per navigare, il traffico passa prima dal server VPN:
+
+1. il client cifra il traffico e lo invia al server VPN;
+2. il server VPN lo decifra e inoltra la richiesta verso Internet;
+3. il sito vede come mittente l'indirizzo IP del server VPN, non quello reale dell'utente.
+
+Questo puo proteggere l'utente su reti pubbliche e mascherare l'indirizzo IP. Se il sito usa
+HTTPS, il contenuto resta cifrato anche oltre il server VPN grazie a TLS.
+
+### Tunneling e modalita IPsec
+
+Il tunneling consiste nell'incapsulare un pacchetto dentro un altro pacchetto. In questo modo
+il traffico originale puo attraversare Internet come se viaggiasse dentro un canale privato.
+
+IPsec puo lavorare in due modalita:
+
+| Modalita | Caratteristiche | Uso tipico |
+| --- | --- | --- |
+| Tunnel | Cifra e incapsula l'intero pacchetto IP originale in un nuovo pacchetto | Gateway-to-gateway, site-to-site |
+| Trasporto | Cifra solo il payload, lasciando visibile l'header IP originale | Host-to-host |
+
+Nella modalita tunnel, i pacchetti interni reali vengono nascosti: su Internet si vedono gli
+indirizzi dei gateway VPN. Nella modalita trasporto, invece, gli indirizzi IP originali restano
+visibili e viene protetto soprattutto il contenuto.
+
+Quando tra client e server c'e un NAT, IPsec puo usare NAT-T, NAT Traversal, su UDP porta
+4500.
+
+### Protocolli VPN
+
+Protocolli VPN principali:
+
+| Protocollo | Caratteristiche | Uso tipico |
+| --- | --- | --- |
+| IPsec/IKEv2 | Standard di livello 3, usa tunnel o trasporto, autenticazione con certificati | Aziende, site-to-site |
+| OpenVPN | Basato su SSL/TLS, flessibile e multipiattaforma | Accesso remoto e scenari misti |
+| WireGuard | Moderno, veloce, semplice, usa crittografia recente | VPN moderne e configurazioni leggere |
+
+IPsec e uno standard storico e molto usato in ambito enterprise. OpenVPN e flessibile e
+puo usare porte configurabili. WireGuard e piu recente, ha codice ridotto e prestazioni
+molto elevate.
+
+### Scenari VPN
+
+Le VPN possono essere usate in scenari diversi:
+
+- Site-to-Site: collega due reti aziendali, per esempio sede centrale e filiale; di solito usa
+  router o firewall come gateway e IPsec in modalita tunnel;
+- End-to-Site: un singolo dispositivo remoto, come un laptop, si collega alla rete
+  aziendale; tipico del telelavoro;
+- End-to-End: due host comunicano direttamente tramite un canale cifrato.
+
+Si distingue anche tra:
+
+- VPN Intranet: collega sedi della stessa organizzazione;
+- VPN Extranet: permette a soggetti esterni, come fornitori o partner, di accedere solo ad
+  alcune risorse autorizzate.
+
+Nelle VPN extranet e fondamentale combinare tunnel VPN, firewall e policy restrittive,
+perche un soggetto esterno non deve poter accedere a tutta la rete interna.
+
+### VPN ad accesso remoto, NAS e RADIUS
+
+Una VPN ad accesso remoto richiede:
+
+- un NAS o VPN gateway, cioe il punto di ingresso sicuro alla rete aziendale;
+- un client VPN installato sul dispositivo dell'utente;
+- un sistema di autenticazione, spesso centralizzato.
+
+Il NAS, Network Access Server, puo delegare l'autenticazione a un server RADIUS.
+
+RADIUS implementa il modello AAA:
+
+- Authentication: verifica chi e l'utente;
+- Authorization: stabilisce cosa puo fare e quali risorse puo raggiungere;
+- Accounting: registra cosa ha fatto, durata della connessione, IP assegnato e traffico.
+
+Una configurazione moderna usa spesso RADIUS insieme a MFA, certificati X.509 o sistemi
+come Active Directory.
+
+### Attacchi e difese nelle VPN
+
+Possibili rischi:
+
+- credential stuffing: uso di credenziali rubate da altri servizi;
+- downgrade attack: tentativo di forzare protocolli o cifrature meno sicure;
+- DNS leak: richieste DNS che escono fuori dal tunnel VPN;
+- configurazioni errate del tunnel o del firewall.
+
+Difese:
+
+- MFA obbligatoria;
+- protocolli aggiornati, come IKEv2, OpenVPN aggiornato o WireGuard;
+- certificati X.509;
+- patch regolari;
+- monitoraggio dei log;
+- policy firewall precise.
+
+### UNITA 4 - Firewall, proxy, ACL e DMZ
+
+Una rete collegata a Internet deve essere protetta da accessi indesiderati, malware,
+attacchi avanzati e traffico non autorizzato.
+
+Gli strumenti principali sono:
+
+- firewall;
+- proxy;
+- ACL;
+- DMZ;
+- IDS/IPS e NGFW.
+
+### Firewall
+
+Un firewall e un sistema di difesa perimetrale che controlla il traffico di rete in base a
+regole di sicurezza.
+
+Principi fondamentali:
+
+- deve essere l'unico punto di contatto tra rete interna ed esterna;
+- solo il traffico autorizzato puo attraversarlo;
+- deve essere configurato, aggiornato e monitorato con attenzione.
+
+Il firewall decide quale traffico puo entrare o uscire in base alle policy. Non garantisce da
+solo che il traffico autorizzato sia sempre innocuo: per questo servono anche IDS/IPS,
+antivirus, EDR e controlli applicativi.
+
+### Personal firewall e network firewall
+
+I firewall possono essere:
+
+- personal firewall: proteggono un singolo host, controllando soprattutto il traffico in
+  ingresso e in uscita dal computer;
+- network firewall: si collocano tra LAN e Internet e filtrano il traffico di tutta la rete.
+
+Nelle aziende si usano spesso firewall dedicati, fisici o virtuali, posti tra router, switch,
+server e zone di rete diverse.
+
+### Packet filtering firewall
+
+Il packet filtering firewall analizza ogni pacchetto singolarmente, senza memoria dei
+pacchetti precedenti. Per questo si dice stateless.
+
+Controlla campi come:
+
+- indirizzo IP sorgente;
+- indirizzo IP destinazione;
+- porta sorgente;
+- porta destinazione;
+- protocollo, per esempio TCP, UDP o ICMP.
+
+Le regole possono seguire due filosofie:
+
+- default allow: tutto e permesso tranne cio che viene vietato;
+- default deny: tutto e bloccato tranne cio che viene autorizzato.
+
+L'approccio piu sicuro e default deny.
+
+Azioni tipiche:
+
+- accept: permette il pacchetto;
+- deny/reject: scarta e puo notificare l'errore;
+- discard/drop: scarta silenziosamente.
+
+Le ACL sono uno strumento concreto per implementare regole di packet filtering.
+
+Limiti:
+
+- non analizza il contenuto applicativo;
+- puo essere aggirato da IP spoofing se configurato male;
+- non rileva attacchi che passano su porte consentite, come 80 o 443;
+- regole complesse sono difficili da verificare.
+
+### Stateful inspection firewall
+
+Lo stateful inspection firewall tiene traccia dello stato delle connessioni.
+
+Quando una connessione viene autorizzata, il firewall crea una voce in una tabella di
+stato con informazioni come:
+
+- IP e porta sorgente;
+- IP e porta destinazione;
+- stato della connessione;
+- informazioni della sequenza TCP.
+
+I pacchetti successivi appartenenti a una connessione gia registrata vengono accettati piu
+facilmente. I pacchetti non coerenti vengono verificati o scartati.
+
+Vantaggio: e piu sicuro di un filtro stateless perche controlla il contesto della connessione.
+Limite: non analizza in profondita il contenuto applicativo.
+
+### Application proxy firewall e reverse proxy
+
+Un application proxy firewall lavora a livello applicativo. Si interpone tra client e server,
+riceve le richieste, le analizza e poi le inoltra.
+
+Vantaggi:
+
+- puo applicare regole basate su URL, utenti o applicazioni;
+- puo richiedere autenticazione;
+- puo filtrare contenuti;
+- puo rilevare alcuni attacchi applicativi.
+
+Svantaggi:
+
+- e piu lento;
+- richiede configurazione;
+- deve supportare i protocolli da controllare.
+
+Un reverse proxy si mette davanti ai server interni. I client da Internet parlano con il
+reverse proxy, che poi smista le richieste verso i server reali.
+
+Il reverse proxy:
+
+- nasconde i server interni;
+- puo bilanciare il carico;
+- puo filtrare attacchi;
+- e spesso collocato in DMZ.
+
+Un bastion host e un server esposto o semi-esposto, progettato per essere particolarmente
+robusto e controllato. Di solito offre un servizio specifico verso l'esterno o funge da punto
+di accesso amministrativo, con configurazione minima, aggiornamenti frequenti e log
+attenti. In una progettazione sicura puo essere collocato nella DMZ.
+
+### Next-Generation Firewall
+
+Un NGFW, Next-Generation Firewall, combina piu tecnologie:
+
+- packet filtering;
+- stateful inspection;
+- deep packet inspection;
+- IPS integrato;
+- rilevamento malware;
+- controllo applicazioni e utenti;
+- analisi del traffico anche con tecniche moderne.
+
+Rispetto a un proxy tradizionale, un NGFW e piu scalabile e puo analizzare molti tipi di
+traffico in tempo reale. In alcune configurazioni puo fare anche TLS inspection, cioe
+ispezionare traffico cifrato dopo averlo terminato e ricifrato secondo policy aziendali.
+
+### DMZ, Demilitarized Zone
+
+La DMZ e una zona di rete separata che ospita servizi accessibili da Internet senza esporre
+direttamente la LAN interna.
+
+Nella DMZ si possono collocare:
+
+- web server;
+- mail server;
+- DNS pubblico;
+- FTP server;
+- reverse proxy.
+
+Serve perche alcuni servizi devono essere raggiungibili dall'esterno, ma se venissero
+compromessi l'attaccante non dovrebbe poter entrare direttamente nella rete interna.
+
+Configurazioni possibili:
+
+- DMZ con un solo firewall: usa una terza interfaccia del firewall; e semplice ma il firewall
+  diventa un single point of failure;
+- DMZ tra due firewall: un firewall esterno separa Internet dalla DMZ e uno interno separa
+  DMZ e LAN; e piu sicura;
+- DMZ stratificata: piu DMZ e piu firewall in cascata, usati in contesti ad alta sicurezza
+  come banche, sanita ed e-commerce.
+
+Regole tipiche:
+
+- Internet puo raggiungere solo i servizi pubblici nella DMZ;
+- la DMZ puo comunicare con la LAN interna solo per servizi strettamente necessari;
+- la LAN puo amministrare la DMZ con protocolli sicuri;
+- traffico non esplicitamente autorizzato deve essere bloccato.
+
 ### Parole chiave
 
 CIA triad, segretezza, integrita, disponibilita, Zero Trust, sniffing, packet sniffer,
@@ -2547,14 +2840,14 @@ Business Continuity, minimo privilegio, audit log, malware, virus, worm, trojan,
 ransomware, spyware, rootkit, EDR, IDS, IPS, SGSI, ISO/IEC 27001, PDCA, GDPR,
 privacy by design, data breach, DPO, MFA, TOTP, OTP, passkey, FIDO2, S/MIME, PGP,
 OpenPGP, SPF, DKIM, DMARC, SSL, TLS, TLS 1.3, HTTPS, HSTS, forward secrecy,
-ECDHE, handshake, certificato X.509, CA, Record Layer, firewall, packet filtering,
-stateful inspection, proxy, bastion host, DMZ, IPsec, VPN, intranet, extranet.
+ECDHE, handshake, certificato X.509, CA, Record Layer, VPN, tunneling, IPsec,
+modalita tunnel, modalita trasporto, NAT-T, OpenVPN, WireGuard, site-to-site,
+end-to-site, end-to-end, intranet, extranet, NAS, RADIUS, AAA, firewall, packet
+filtering, default deny, stateful inspection, proxy, reverse proxy, NGFW, deep packet
+inspection, ACL, bastion host, DMZ.
 
 ### Da integrare con le presentazioni
-
-- Differenze tra firewall stateless, stateful e proxy.
-- Schema di una rete con DMZ.
-- Differenza tra VPN site-to-site e remote access.
+- Eventuali esercizi Packet Tracer su firewall, DMZ, VPN e policy di sicurezza.
 
 ---
 
@@ -2772,7 +3065,8 @@ progettazione di rete.
 - Presentazione Modulo IV - Sistemi di autenticazione, firma, hash, certificati e PKI: integrata.
 - Presentazione Modulo V - Sicurezza nei sistemi informativi: integrata.
 - Presentazione Modulo V - Sicurezza con TLS: integrata.
-- Presentazione Modulo V - Firewall, DMZ, IPsec e VPN: da integrare, se presenti.
+- Presentazione Modulo V - VPN, IPsec, intranet, extranet e RADIUS: integrata.
+- Presentazione Modulo V - Firewall, proxy, ACL e DMZ: integrata.
 - Presentazione Modulo VI: da integrare.
 - Presentazione Modulo VII: da integrare.
 - Materiali di laboratorio: da integrare.
