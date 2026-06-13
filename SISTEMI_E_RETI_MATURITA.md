@@ -2251,19 +2251,310 @@ La DMZ e una zona di rete separata in cui si collocano servizi esposti verso l'e
 web server o mail server, riducendo il rischio per la rete interna. Le VPN permettono invece
 di creare collegamenti sicuri su reti pubbliche.
 
+### UNITA 1 - Sicurezza nei sistemi informativi
+
+La sicurezza nei sistemi informativi e diventata sempre piu importante con l'evoluzione
+delle reti. Negli anni dei mainframe il rischio principale era l'accesso fisico non
+autorizzato. Con le LAN Ethernet e Internet sono comparsi rischi come sniffing, accessi
+remoti non autorizzati e attacchi ai servizi esposti.
+
+Oggi, con cloud, smart working e dispositivi IoT, il perimetro aziendale non e piu semplice
+da definire. Per questo si parla spesso di Zero Trust: non ci si fida automaticamente di un
+utente o di un dispositivo solo perche si trova "dentro" la rete, ma si verifica sempre
+identita, permessi e contesto.
+
+### Evoluzione delle minacce
+
+Le minacce sono cambiate insieme alle architetture di rete:
+
+- mainframe: sistemi centralizzati, rischio soprattutto fisico;
+- LAN Ethernet: rischio di sniffing e intercettazione del traffico locale;
+- Internet aperta: accessi remoti, scansioni, exploit, necessita di firewall e IDS/IPS;
+- cloud e IoT: dati distribuiti, dispositivi numerosi, identita e autorizzazioni da gestire con
+  attenzione.
+
+Lo sniffing e un esempio classico: un attaccante usa strumenti come Wireshark per
+intercettare pacchetti di rete. Se protocolli come POP3, IMAP, FTP o HTTP vengono usati
+senza cifratura, username, password e dati possono viaggiare in chiaro. Le versioni sicure,
+come IMAPS, POP3S e HTTPS, usano TLS per rendere i dati non leggibili a chi intercetta.
+
+### Problemi di sicurezza nei sistemi informatici
+
+I problemi di sicurezza non derivano solo da hacker esterni. Possono dipendere anche da
+guasti, errori umani o eventi fisici.
+
+| Problema | Rischio | Contromisure |
+| --- | --- | --- |
+| Calamita naturali | Perdita dell'infrastruttura | Disaster Recovery Plan, backup offsite, cloud backup |
+| Guasti hardware | Interruzione del servizio o perdita dati | RAID, UPS, server ridondanti |
+| Errori del personale | Cancellazioni o configurazioni errate | formazione, backup, separazione sviluppo/produzione |
+| Malware | Furto, cifratura o distruzione dei dati | antivirus, EDR, aggiornamenti |
+| Accesso non autorizzato | Uso illecito di sistemi e dati | autenticazione, MFA, ACL, log |
+
+Due indicatori importanti nel disaster recovery sono:
+
+- RTO, Recovery Time Objective: tempo massimo tollerabile di interruzione;
+- RPO, Recovery Point Objective: quantita massima di dati che si accetta di perdere.
+
+Una regola pratica per i backup e la regola 3-2-1: tre copie dei dati, su due supporti
+diversi, con una copia conservata fuori sede.
+
+### Malware moderno
+
+Il malware comprende molti tipi di software dannoso:
+
+- virus: si replica allegandosi a file o programmi;
+- worm: si propaga autonomamente in rete;
+- trojan: si presenta come software legittimo ma apre accessi non autorizzati;
+- spyware: raccoglie dati dell'utente, come password o schermate;
+- rootkit: nasconde la presenza dell'attaccante mantenendo privilegi elevati;
+- ransomware: cifra i dati della vittima e chiede un riscatto.
+
+Il ransomware e una delle minacce piu gravi. Di solito entra tramite phishing o vulnerabilita
+non corrette, si propaga nella rete, cifra file e backup raggiungibili e poi chiede un
+pagamento per la chiave di decifratura.
+
+Difese principali:
+
+- backup offline e regola 3-2-1;
+- aggiornamenti tempestivi;
+- segmentazione della rete;
+- formazione anti-phishing;
+- EDR, Endpoint Detection and Response.
+
+### EDR, IDS e IPS
+
+Un antivirus tradizionale confronta file e programmi con un database di firme note. Un EDR
+va oltre: analizza il comportamento dei processi e puo bloccare azioni sospette anche se il
+malware non e ancora noto.
+
+Esempio: se un programma inizia a cifrare centinaia di file in poco tempo, l'EDR puo
+riconoscere un comportamento simile a un ransomware e bloccarlo.
+
+IDS e IPS servono invece per il traffico di rete:
+
+- IDS, Intrusion Detection System: osserva il traffico, rileva comportamenti sospetti e
+  genera allarmi, ma non blocca direttamente;
+- IPS, Intrusion Prevention System: si trova nel flusso del traffico e puo bloccare pacchetti,
+  connessioni o host sospetti.
+
+Nelle reti moderne IDS e IPS sono spesso integrati in apparati di sicurezza piu completi,
+come firewall di nuova generazione.
+
+### SGSI e ISO/IEC 27001
+
+SGSI significa Sistema di Gestione della Sicurezza delle Informazioni. Non e un singolo
+software, ma un insieme di processi, politiche e controlli per proteggere le informazioni
+aziendali.
+
+Lo standard ISO/IEC 27001:2022 definisce un modello per organizzare la sicurezza delle
+informazioni. Si basa sul ciclo di miglioramento continuo PDCA:
+
+- Plan: definire perimetro, risorse critiche, rischi e contromisure;
+- Do: applicare le misure previste, come policy, firewall, formazione e monitoraggio;
+- Check: verificare con audit, analisi dei log e test se le misure funzionano;
+- Act: correggere le non conformita e migliorare il sistema.
+
+La sicurezza non e quindi un'attivita conclusa una volta per tutte, ma un processo continuo.
+
+### GDPR e protezione dei dati personali
+
+Il GDPR, Regolamento Europeo 2016/679, disciplina la protezione dei dati personali. In
+Italia il Garante per la Protezione dei Dati Personali vigila sul rispetto della normativa.
+
+Principi importanti:
+
+- Privacy by Design: la protezione dei dati va progettata fin dall'inizio del sistema;
+- Privacy by Default: le impostazioni predefinite devono essere le piu protettive;
+- Data Breach Notification: una violazione rilevante va notificata al Garante entro 72 ore;
+- diritti degli interessati: accesso, rettifica, cancellazione, portabilita, limitazione e
+  opposizione al trattamento;
+- DPO, Data Protection Officer: figura che supervisiona la conformita al GDPR in contesti
+  dove e richiesta.
+
+Per una traccia d'esame e utile collegare GDPR, backup, cifratura, controllo accessi e log.
+
+### Autenticazione moderna e MFA
+
+L'autenticazione verifica l'identita di un utente. La sola password non basta piu, perche puo
+essere rubata con phishing, data breach, brute force, credential stuffing o keylogger.
+
+MFA, Multi-Factor Authentication, richiede almeno due fattori:
+
+- qualcosa che sai: password, PIN;
+- qualcosa che hai: smartphone, token OTP, smart card, YubiKey;
+- qualcosa che sei: impronta digitale, volto, voce.
+
+Esempi:
+
+- TOTP: codice temporaneo generato da app come Google Authenticator;
+- SMS OTP: codice via SMS, semplice ma meno sicuro;
+- hardware token: dispositivo fisico USB/NFC;
+- passkey FIDO2/WebAuthn: autenticazione senza password basata su crittografia a chiave
+  pubblica e biometria locale.
+
+MFA riduce molto il rischio: anche se la password viene rubata, serve ancora il secondo
+fattore.
+
+### Sicurezza della posta elettronica
+
+SMTP, nella sua forma base, non garantisce autenticazione forte del mittente e puo essere
+usato per spoofing e phishing. Inoltre, senza TLS, i messaggi possono viaggiare in chiaro.
+
+Soluzioni moderne:
+
+- STARTTLS e SMTPS: cifrano il canale SMTP con TLS;
+- IMAPS e POP3S: usano TLS per la ricezione della posta;
+- SPF, DKIM e DMARC: standard anti-spoofing che verificano la legittimita del dominio
+  mittente;
+- S/MIME e PGP/GPG: permettono firma digitale e cifratura end-to-end dei messaggi.
+
+S/MIME si basa su certificati X.509 rilasciati da CA ed e adatto ad ambienti aziendali
+strutturati. PGP/GPG e piu decentralizzato, basato su chiavi generate dagli utenti e spesso
+su un modello di fiducia chiamato Web of Trust.
+
+### PGP in sintesi
+
+PGP usa crittografia ibrida:
+
+1. calcola l'hash del messaggio, per esempio con SHA-256;
+2. firma il digest con la chiave privata del mittente;
+3. comprime messaggio e firma;
+4. cifra il contenuto con una chiave di sessione simmetrica, per esempio AES;
+5. cifra la chiave di sessione con la chiave pubblica del destinatario.
+
+Il destinatario esegue i passaggi inversi: decifra la chiave di sessione con la propria chiave
+privata, decifra il messaggio, decomprime e verifica la firma con la chiave pubblica del
+mittente.
+
+### UNITA 2 - Sicurezza con TLS
+
+TCP, IP e HTTP sono stati progettati per comunicare in modo affidabile, non per garantire
+la sicurezza. Senza protezioni, i dati possono essere letti, modificati o intercettati.
+
+TLS, Transport Layer Security, aggiunge un livello di sicurezza tra applicazione e trasporto.
+Protegge protocolli come HTTP, SMTP, IMAP, POP3 e FTP senza dover cambiare la logica
+principale dell'applicazione.
+
+TLS fornisce:
+
+- cifratura dei dati;
+- autenticazione del server tramite certificato;
+- integrita dei messaggi;
+- opzionalmente, autenticazione del client.
+
+HTTPS e semplicemente HTTP sopra TLS.
+
+### Da SSL a TLS 1.3
+
+SSL e il predecessore di TLS ed e oggi considerato deprecato.
+
+Evoluzione principale:
+
+- SSL 2.0 e SSL 3.0: deprecati per vulnerabilita;
+- TLS 1.0 e TLS 1.1: deprecati;
+- TLS 1.2: ancora usato, ma richiede configurazione attenta;
+- TLS 1.3: standard moderno, piu veloce e piu sicuro.
+
+TLS 1.3 migliora rispetto a TLS 1.2 perche:
+
+- riduce l'handshake a 1 RTT;
+- usa solo suite crittografiche moderne;
+- rimuove compressione e algoritmi deboli;
+- rende obbligatoria la forward secrecy.
+
+RTT, Round Trip Time, e il tempo di andata e ritorno di un messaggio tra client e server.
+Ridurre il numero di RTT rende la connessione piu rapida.
+
+Forward secrecy significa che ogni sessione usa una chiave temporanea diversa. Se in
+futuro venisse rubata la chiave privata del server, il traffico registrato in passato non
+potrebbe essere decifrato, perche le chiavi di sessione passate non esistono piu.
+
+### Handshake TLS 1.3
+
+L'handshake TLS serve a concordare i parametri di sicurezza e stabilire una chiave di
+sessione.
+
+Schema semplificato:
+
+1. ClientHello: il client invia versione TLS supportata, cipher suite e parametri ECDHE;
+2. ServerHello: il server sceglie i parametri, invia il certificato e prova la propria identita;
+3. Finished del client: il client verifica tutto e conferma;
+4. dati applicativi cifrati: il canale protetto e attivo.
+
+In TLS 1.3 il certificato e alcuni messaggi dell'handshake sono gia protetti rispetto alle
+versioni precedenti.
+
+### Certificati X.509 e verifica del server
+
+Quando il browser si collega a un sito HTTPS, il server invia un certificato X.509. Il
+certificato contiene:
+
+- nome del dominio;
+- chiave pubblica del server;
+- periodo di validita;
+- firma digitale della CA che lo ha emesso.
+
+Il browser verifica:
+
+1. che la firma del certificato sia valida;
+2. che la CA sia fidata;
+3. che il dominio del certificato corrisponda al sito visitato;
+4. che il certificato non sia scaduto;
+5. che non sia stato revocato.
+
+Se uno di questi controlli fallisce, il browser mostra un avviso di sicurezza.
+
+### TLS Record Layer
+
+Dopo l'handshake, i dati applicativi vengono protetti dal TLS Record Layer.
+
+Funzionamento:
+
+1. i dati applicativi vengono divisi in frammenti;
+2. ogni frammento diventa un record TLS;
+3. il record viene cifrato, per esempio con AES o ChaCha20;
+4. viene aggiunto un tag di autenticazione per verificare l'integrita;
+5. il record cifrato viene consegnato a TCP.
+
+Se un attaccante modifica anche un solo bit, il tag di autenticazione non corrisponde e il
+record viene scartato. I numeri di sequenza aiutano anche a prevenire attacchi replay.
+
+### HTTPS e HSTS
+
+HTTPS cifra la comunicazione tra browser e server usando TLS. Pero, se l'utente digita un
+indirizzo `http://`, la prima richiesta potrebbe partire in chiaro.
+
+HSTS, HTTP Strict Transport Security, e un meccanismo con cui il server dice al browser di
+usare sempre HTTPS per quel dominio.
+
+Esempio di header:
+
+```text
+Strict-Transport-Security: max-age=31536000
+```
+
+Dopo aver ricevuto HSTS, il browser trasforma automaticamente richieste `http://` in
+`https://` prima di inviarle. Questo riduce il rischio di attacchi come SSL stripping, in cui un
+attaccante prova a mantenere la vittima su HTTP in chiaro mentre comunica in HTTPS con
+il server.
+
 ### Parole chiave
 
-CIA triad, segretezza, integrita, disponibilita, minaccia, vulnerabilita, SSL, TLS, HTTPS,
-firewall, packet filtering, stateful inspection, proxy, bastion host, DMZ, IPsec, VPN,
-intranet, extranet.
+CIA triad, segretezza, integrita, disponibilita, Zero Trust, sniffing, packet sniffer,
+Wireshark, Disaster Recovery Plan, RTO, RPO, backup 3-2-1, fault tolerance, RAID, UPS,
+Business Continuity, minimo privilegio, audit log, malware, virus, worm, trojan,
+ransomware, spyware, rootkit, EDR, IDS, IPS, SGSI, ISO/IEC 27001, PDCA, GDPR,
+privacy by design, data breach, DPO, MFA, TOTP, OTP, passkey, FIDO2, S/MIME, PGP,
+OpenPGP, SPF, DKIM, DMARC, SSL, TLS, TLS 1.3, HTTPS, HSTS, forward secrecy,
+ECDHE, handshake, certificato X.509, CA, Record Layer, firewall, packet filtering,
+stateful inspection, proxy, bastion host, DMZ, IPsec, VPN, intranet, extranet.
 
 ### Da integrare con le presentazioni
 
-- Esempi di minacce e contromisure.
 - Differenze tra firewall stateless, stateful e proxy.
 - Schema di una rete con DMZ.
 - Differenza tra VPN site-to-site e remote access.
-- Collegamento tra TLS, certificati e HTTPS.
 
 ---
 
@@ -2479,7 +2770,9 @@ progettazione di rete.
 - Presentazione Modulo IV - Crittografia simmetrica, DES e AES: integrata.
 - Presentazione Modulo IV - Crittografia asimmetrica, Diffie-Hellman, RSA e ibrida: integrata.
 - Presentazione Modulo IV - Sistemi di autenticazione, firma, hash, certificati e PKI: integrata.
-- Presentazione Modulo V: da integrare.
+- Presentazione Modulo V - Sicurezza nei sistemi informativi: integrata.
+- Presentazione Modulo V - Sicurezza con TLS: integrata.
+- Presentazione Modulo V - Firewall, DMZ, IPsec e VPN: da integrare, se presenti.
 - Presentazione Modulo VI: da integrare.
 - Presentazione Modulo VII: da integrare.
 - Materiali di laboratorio: da integrare.
