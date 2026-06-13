@@ -2940,19 +2940,354 @@ La sicurezza si e evoluta da protocolli meno robusti a soluzioni piu sicure come
 WPA3. L'autenticazione 802.1X con server RADIUS consente un controllo centralizzato degli
 accessi.
 
+### UNITA 1 - Classificazione delle reti wireless
+
+Le reti wireless usano onde radio o segnali elettromagnetici per trasmettere dati senza
+cavi. Come le reti cablate, possono essere classificate in base all'estensione dell'area
+coperta.
+
+| Tipo | Estensione | Esempi |
+| --- | --- | --- |
+| WPAN | Reti personali, pochi metri | Bluetooth, NFC, ZigBee, UWB |
+| WLAN | Reti locali wireless | Wi-Fi, standard IEEE 802.11 |
+| WMAN | Reti metropolitane | FWA, vecchio WiMAX |
+| WWAN | Reti geografiche | 4G, 5G, connessioni satellitari |
+
+Le WPAN collegano dispositivi vicini, come cuffie, smartwatch, sensori o smartphone.
+Le WLAN sostituiscono o integrano le LAN cablate in case, scuole e aziende. Le WMAN e
+WWAN coprono aree piu ampie, fino alla scala cittadina o globale.
+
+### WPAN: Bluetooth, NFC e altre tecnologie
+
+Bluetooth e una tecnologia WPAN usata per comunicazioni a corto raggio. Opera nella
+banda a 2,4 GHz e usa tecniche come FHSS, Frequency Hopping Spread Spectrum, cioe
+salta rapidamente tra canali diversi per ridurre interferenze.
+
+Esempi d'uso:
+
+- cuffie e casse audio;
+- smartwatch;
+- tastiere e mouse wireless;
+- dispositivi medici;
+- sensori IoT.
+
+NFC, Near Field Communication, e pensato per distanze molto brevi, dell'ordine di pochi
+centimetri. Lavora a 13,56 MHz ed e usato per pagamenti contactless, badge, tag e
+autenticazione di prossimita.
+
+Modalita NFC:
+
+- card emulation: lo smartphone si comporta come una carta;
+- reader/writer: il dispositivo legge tag NFC;
+- peer-to-peer: due dispositivi NFC attivi scambiano piccoli dati.
+
+Altre tecnologie WPAN:
+
+- ZigBee, basato su IEEE 802.15.4, usato per reti mesh a basso consumo;
+- UWB, Ultra-Wideband, usato per localizzazione precisa in ambienti indoor;
+- BAN, Body Area Network, per sensori medicali indossabili.
+
+### WLAN e standard IEEE 802.11
+
+Le WLAN, Wireless Local Area Network, sono reti locali senza fili. Hanno una copertura
+indicativa da 30 metri in ambienti interni fino a circa 150 metri in campo aperto, a seconda
+di ostacoli, potenza, interferenze e frequenza.
+
+Lo standard principale e IEEE 802.11, cioe il Wi-Fi.
+
+Gli standard storici piu importanti sono:
+
+| Standard | Banda | Caratteristiche |
+| --- | --- | --- |
+| 802.11a | 5 GHz | Maggiore velocita rispetto ai primi standard, minore portata |
+| 802.11b | 2,4 GHz | Buona portata, velocita piu bassa |
+| 802.11g | 2,4 GHz | Compatibile con 802.11b, velocita superiore |
+| 802.11n | 2,4/5 GHz | Introduce MIMO, migliori prestazioni |
+
+Gli standard moderni sono:
+
+| Nome | Standard | Bande | Note |
+| --- | --- | --- | --- |
+| Wi-Fi 5 | 802.11ac | 5 GHz | Ancora molto diffuso |
+| Wi-Fi 6 | 802.11ax | 2,4/5 GHz | OFDMA, migliore gestione di molti dispositivi |
+| Wi-Fi 6E | 802.11ax | 2,4/5/6 GHz | Aggiunge banda 6 GHz, meno interferenze |
+| Wi-Fi 7 | 802.11be | 2,4/5/6 GHz | Multi-Link Operation, prestazioni molto elevate |
+
+### Frequenze: 2,4 GHz, 5 GHz e 6 GHz
+
+Le bande Wi-Fi hanno caratteristiche diverse:
+
+- 2,4 GHz: maggiore copertura e migliore attraversamento degli ostacoli, ma velocita piu
+  bassa e piu interferenze;
+- 5 GHz: velocita piu alta e meno interferenze, ma portata inferiore;
+- 6 GHz: usata dagli standard piu recenti, offre alta velocita e bassa interferenza, ma
+  copertura minore.
+
+In una progettazione WLAN bisogna scegliere frequenze e canali considerando copertura,
+numero di utenti, ostacoli, interferenze e applicazioni richieste.
+
+### WMAN, WWAN, reti cellulari e satellitari
+
+Le WMAN coprono aree metropolitane. Storicamente si citava WiMAX, standard IEEE
+802.16, ma oggi la soluzione piu comune e FWA, Fixed Wireless Access, spesso basata su
+4G/5G.
+
+Configurazioni WMAN:
+
+- point-to-point: collega due sedi, per esempio due edifici aziendali;
+- point-to-multipoint: una stazione base serve piu utenti o edifici.
+
+Le WWAN coprono aree geografiche molto ampie. Comprendono:
+
+- reti cellulari 4G/5G, e in prospettiva 6G;
+- connessioni satellitari, per esempio sistemi LEO come Starlink.
+
+Le reti cellulari moderne usano tecniche come OFDMA, che divide il canale radio in molte
+sottoportanti ortogonali. Il CDMA era usato in generazioni precedenti, come il 3G.
+
+Il GPS non e una rete dati bidirezionale: e un sistema satellitare di posizionamento che
+permette ai ricevitori di calcolare la propria posizione usando segnali provenienti dai
+satelliti.
+
+### Sicurezza delle reti wireless
+
+Le reti wireless sono piu esposte di quelle cablate, perche il segnale radio si propaga
+nell'ambiente e puo essere intercettato anche senza accesso fisico al cavo.
+
+Rischi:
+
+- intercettazione del traffico;
+- access point non autorizzati;
+- spoofing e attacchi ARP;
+- password deboli;
+- attacchi a dizionario;
+- denial of service tramite frame di gestione.
+
+Per proteggere una rete Wi-Fi servono:
+
+- crittografia, per rendere il traffico non leggibile;
+- autenticazione, per verificare chi puo accedere;
+- configurazioni aggiornate, evitando protocolli obsoleti.
+
+Protocolli:
+
+- WEP: obsoleto e insicuro;
+- WPA con TKIP: oggi non raccomandato;
+- WPA2: basato su AES/CCMP, ancora molto usato;
+- WPA3: standard moderno, piu sicuro.
+
+### WPA2 e WPA3
+
+WPA2 usa AES e CCMP per garantire confidenzialita e integrita. Puo funzionare in due
+modalita:
+
+- Personal, o PSK: una password condivisa tra gli utenti;
+- Enterprise: autenticazione 802.1X con server RADIUS.
+
+Il limite di WPA2-PSK e che, se la password e debole, puo essere attaccata tramite
+dizionario offline partendo dal 4-way handshake.
+
+WPA3 migliora la sicurezza introducendo:
+
+- SAE, Simultaneous Authentication of Equals, al posto del classico PSK;
+- protezione migliore contro attacchi a dizionario offline;
+- OWE, Opportunistic Wireless Encryption, per cifrare reti pubbliche aperte;
+- chiavi piu robuste in modalita Enterprise;
+- Management Frame Protection 802.11w, per proteggere i frame di gestione.
+
+WPA3 e richiesto negli standard Wi-Fi piu recenti, come Wi-Fi 6/6E/7.
+
+### Autenticazione 802.1X con RADIUS
+
+In ambito aziendale non e sufficiente una sola password condivisa. Si usa quindi IEEE
+802.1X, che permette autenticazione centralizzata e per utente.
+
+Componenti:
+
+- supplicant: il client che vuole accedere alla rete;
+- authenticator: access point o switch che controlla l'accesso;
+- authentication server: server RADIUS che verifica le credenziali.
+
+Funzionamento:
+
+1. il client entra nel raggio dell'AP e richiede accesso;
+2. l'AP chiede le credenziali;
+3. il client invia la propria identita;
+4. l'AP inoltra la richiesta al server RADIUS usando EAP;
+5. il server verifica le credenziali;
+6. se sono corrette, invia Accept e le chiavi di sessione;
+7. l'AP apre la connessione protetta.
+
+Questo sistema permette credenziali individuali, revoca degli utenti e controllo piu preciso
+rispetto a una password unica condivisa.
+
+### UNITA 2 - Trasmissione e architettura delle reti wireless
+
+Nelle reti cablate Ethernet tradizionali si usava CSMA/CD, Collision Detection: il nodo
+trasmette e, se rileva una collisione, interrompe e ritrasmette.
+
+Nel Wi-Fi non e possibile rilevare le collisioni nello stesso modo, perche una stazione non
+puo ascoltare perfettamente mentre trasmette e perche il mezzo radio e condiviso in modo
+piu complesso. Per questo IEEE 802.11 usa CSMA/CA, Collision Avoidance.
+
+### CSMA/CA
+
+CSMA/CA significa:
+
+- Carrier Sense: la stazione ascolta il canale prima di trasmettere;
+- Multiple Access: piu stazioni condividono lo stesso mezzo radio;
+- Collision Avoidance: si cerca di evitare la collisione prima che avvenga.
+
+Funzionamento base:
+
+1. la stazione ascolta il canale;
+2. se il canale e occupato, aspetta;
+3. quando il canale diventa libero, attende un intervallo DIFS;
+4. sceglie un tempo casuale di backoff;
+5. quando il backoff termina, trasmette;
+6. il destinatario invia un ACK;
+7. se l'ACK non arriva, si presume errore o collisione e si ritrasmette.
+
+DCF, Distributed Coordination Function, e la modalita piu comune: ogni stazione gestisce
+autonomamente l'accesso al mezzo seguendo CSMA/CA.
+
+PCF, Point Coordination Function, e una modalita centralizzata in cui l'AP coordina le
+trasmissioni, ma e poco diffusa.
+
+### RTS/CTS
+
+RTS/CTS e un meccanismo opzionale per ridurre le collisioni, soprattutto nel problema del
+nodo nascosto.
+
+Passaggi:
+
+1. la stazione invia RTS, Request To Send;
+2. l'access point risponde con CTS, Clear To Send;
+3. le altre stazioni ricevono il CTS e restano in attesa;
+4. la stazione trasmette i dati;
+5. il destinatario conferma con ACK.
+
+RTS/CTS introduce overhead, ma puo migliorare la comunicazione in reti con molte stazioni
+o con problemi di copertura.
+
+### Problemi tipici della trasmissione wireless
+
+Le reti wireless devono affrontare problemi fisici assenti o meno evidenti nelle reti cablate.
+
+| Problema | Descrizione | Possibile soluzione |
+| --- | --- | --- |
+| Attenuazione | Il segnale perde potenza con la distanza e con gli ostacoli | piu AP, antenne migliori, progettazione copertura |
+| Interferenze | Altri dispositivi disturbano il segnale | scelta canali, bande 5/6 GHz, pianificazione radio |
+| Multipath | Il segnale rimbalza e arriva per percorsi diversi | OFDM, MIMO, progettazione corretta |
+| Effetto Doppler | Movimento modifica la frequenza percepita | adattamento dinamico nelle reti mobili |
+
+Il problema del nodo nascosto si verifica quando due stazioni non si sentono tra loro, ma
+entrambe comunicano con lo stesso AP: possono trasmettere insieme e causare collisione
+presso l'AP. RTS/CTS aiuta a ridurre questo problema.
+
+Il problema della stazione esposta si verifica quando una stazione evita di trasmettere
+perche sente un'altra trasmissione, anche se in realta potrebbe comunicare senza
+interferire. Questo riduce inutilmente la capacita della rete.
+
+### Frame 802.11
+
+Nelle reti Wi-Fi i dati e le informazioni di controllo viaggiano dentro frame 802.11. I frame
+principali sono:
+
+- frame dati: trasportano il traffico degli utenti;
+- frame di controllo: aiutano a gestire l'accesso al mezzo, per esempio RTS, CTS e ACK;
+- frame di gestione: servono per scoprire reti, associarsi e mantenere la connessione, per
+  esempio beacon, probe request/response, association request/response.
+
+I beacon vengono inviati periodicamente dagli access point e contengono informazioni come
+SSID e BSSID. I frame di gestione sono importanti per il funzionamento della rete, ma
+possono essere bersaglio di attacchi; per questo WPA3 richiede la protezione dei frame di
+gestione tramite 802.11w.
+
+### Componenti di una rete wireless
+
+Componenti principali:
+
+- host wireless: smartphone, notebook, tablet, stampanti Wi-Fi, telecamere, dispositivi IoT;
+- access point: collega i client wireless alla rete cablata;
+- infrastruttura o distribution system: rete che collega AP, switch, router e Internet;
+- wireless link: collegamento radio tra client e access point.
+
+Una rete con AP collegati a una rete cablata viene detta rete con infrastruttura.
+
+### BSS, ESS, BSSID e SSID
+
+Il BSS, Basic Service Set, e l'unita base di una rete Wi-Fi: un access point e tutti i client
+associati a esso.
+
+L'area coperta dall'AP e detta BSA, Basic Service Area.
+
+Il BSSID identifica il BSS ed e normalmente l'indirizzo MAC dell'access point.
+
+L'SSID, Service Set Identifier, e il nome della rete Wi-Fi visibile agli utenti, per esempio
+`Scuola-WiFi`.
+
+Differenza importante:
+
+- BSSID: identifica una cella/AP specifico;
+- SSID: identifica la rete logica.
+
+Un ESS, Extended Service Set, e formato da piu BSS collegati dallo stesso distribution
+system e con lo stesso SSID. Permette a un utente di spostarsi tra AP diversi mantenendo la
+connessione.
+
+### Roaming, handoff e scanning
+
+Il roaming e il passaggio di una stazione da un AP a un altro.
+
+Tipi:
+
+- stazione statica: resta nello stesso BSS;
+- transizione tra BSS dello stesso ESS: roaming trasparente, stesso SSID e di solito stesso
+  indirizzo IP;
+- transizione tra ESS diversi: cambio rete, nuova autenticazione e spesso nuovo indirizzo
+  IP.
+
+Nello stesso ESS il roaming e gestito a livello 2: la stazione invia una re-association
+request al nuovo AP e il distribution system aggiorna le tabelle di forwarding. Standard
+come 802.11r riducono la latenza del roaming, utile per VoIP e applicazioni real-time.
+
+Per trovare gli AP disponibili, una stazione esegue scanning:
+
+- scanning attivo: invia Probe Request e riceve Probe Response;
+- scanning passivo: ascolta i beacon periodici trasmessi dagli AP.
+
+I beacon contengono informazioni come SSID e BSSID.
+
+### Ruolo e modalita dell'access point
+
+Un access point puo lavorare in diverse modalita:
+
+| Modalita | Descrizione |
+| --- | --- |
+| Root mode | Modalita standard: AP collegato alla LAN cablata e usato dai client |
+| Bridge mode | Collega segmenti di rete cablata tramite collegamento wireless |
+| Repeater mode | Ritrasmette il segnale di un AP per estendere la copertura |
+| Mesh mode | Piu AP formano una rete magliata e si instradano tra loro |
+
+In repeater mode la banda disponibile puo ridursi, perche l'AP riceve e ritrasmette sullo
+stesso canale. Le reti mesh moderne migliorano la copertura usando piu nodi e, spesso,
+una banda dedicata per il collegamento tra AP.
+
 ### Parole chiave
 
-Wi-Fi, IEEE 802.11, modulazione, WPA, WPA2, WPA3, 802.1X, RADIUS, CSMA/CA,
-RTS/CTS, handoff, frame 802.11, BSS, ESS, BSSID, SSID, access point, distribution system,
-rete cellulare, satellite, GPS.
+Wireless, WPAN, WLAN, WMAN, WWAN, Bluetooth, NFC, ZigBee, UWB, Wi-Fi, IEEE
+802.11, 802.11a, 802.11b, 802.11g, 802.11n, Wi-Fi 5, Wi-Fi 6, Wi-Fi 6E, Wi-Fi 7,
+2,4 GHz, 5 GHz, 6 GHz, OFDMA, OFDM, MIMO, FWA, WiMAX, rete cellulare, 4G, 5G,
+satellite, GPS, WPA2, WPA3, AES, CCMP, SAE, OWE, 802.1X, RADIUS, EAP, PSK,
+CSMA/CA, DCF, PCF, DIFS, SIFS, backoff, RTS/CTS, ACK, attenuazione,
+interferenza, multipath, nodo nascosto, stazione esposta, BSS, BSA, ESS, BSSID,
+SSID, access point, distribution system, roaming, handoff, scanning, beacon, root
+mode, bridge mode, repeater mode, mesh mode.
 
 ### Da integrare con le presentazioni
 
-- Tabella comparativa 802.11a/b/g/n.
-- Differenza tra SSID e BSSID.
-- Struttura del frame 802.11.
-- Problemi tipici: interferenze, attenuazione, nodo nascosto, handoff.
-- Differenza tra Wi-Fi, rete cellulare, satellite e GPS.
+- Eventuali esercizi o schemi Packet Tracer sulle reti wireless.
 
 ---
 
@@ -3067,10 +3402,11 @@ progettazione di rete.
 - Presentazione Modulo V - Sicurezza con TLS: integrata.
 - Presentazione Modulo V - VPN, IPsec, intranet, extranet e RADIUS: integrata.
 - Presentazione Modulo V - Firewall, proxy, ACL e DMZ: integrata.
-- Presentazione Modulo VI: da integrare.
-- Presentazione Modulo VII: da integrare.
-- Materiali di laboratorio: da integrare.
-- Materiali per seconda prova: da integrare.
+- Presentazione Modulo VI: non necessaria su richiesta.
+- Presentazione Modulo VII - Reti wireless: integrata.
+- Presentazione Modulo VII - Trasmissione e architettura wireless: integrata.
+- Materiali di laboratorio: non necessari su richiesta.
+- Materiali per seconda prova: non necessari su richiesta.
 
 ## Possibili collegamenti per l'orale
 
