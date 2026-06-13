@@ -1346,14 +1346,305 @@ Per far comunicare VLAN diverse serve un dispositivo di livello 3, come un route
 switch multilayer. Le due soluzioni principali studiate sono l'inter-VLAN tradizionale e il
 Router-on-a-stick.
 
+### UNITA 1 - Le Virtual LAN
+
+Con il termine VLAN, Virtual LAN, si indica un insieme di tecnologie che permettono di
+creare piu reti logiche partendo da una sola rete fisica. In pratica, usando gli stessi switch
+e gli stessi collegamenti, si possono ottenere piu LAN separate tra loro.
+
+Ogni VLAN si comporta come una rete locale indipendente:
+
+- i frame broadcast restano confinati nella VLAN;
+- la comunicazione di livello 2 avviene solo tra dispositivi della stessa VLAN;
+- host appartenenti a VLAN diverse non comunicano direttamente;
+- per comunicare tra VLAN diverse serve routing di livello 3.
+
+Lo standard IEEE 802.1Q definisce il modo in cui piu VLAN possono condividere la stessa
+infrastruttura fisica, soprattutto quando il traffico deve attraversare collegamenti tra switch.
+
+Ogni VLAN e identificata da:
+
+- un nome;
+- un numero chiamato VID, VLAN Identifier;
+- un proprio blocco di indirizzi IP.
+
+I VLAN ID utilizzabili normalmente vanno da 1 a 4094. I valori 0 e 4095 sono riservati.
+
+### Scopo e vantaggi delle VLAN
+
+Le VLAN vengono usate per migliorare organizzazione, prestazioni e sicurezza della rete.
+
+I vantaggi principali sono:
+
+- risparmio: non serve costruire una nuova rete fisica per ogni reparto o gruppo;
+- prestazioni: il traffico broadcast resta confinato e non si propaga a tutta la rete;
+- sicurezza: un host di una VLAN non vede direttamente il traffico delle altre VLAN;
+- flessibilita: spostare un dispositivo puo richiedere solo una riconfigurazione logica
+  dello switch, senza cambiare la topologia fisica.
+
+Esempio: in un'azienda si possono creare VLAN separate per amministrazione, studenti,
+laboratori, ospiti e gestione degli apparati.
+
+### Access port e trunk port
+
+Le porte di uno switch possono essere configurate principalmente in due modi.
+
+Una access port e una porta collegata a dispositivi finali, come PC, stampanti o server, che
+appartengono a una sola VLAN. I frame che entrano o escono da una access port sono
+normalmente non taggati.
+
+Una trunk port e una porta usata per collegare switch tra loro, oppure uno switch a un
+router o a uno switch multilayer. Su una trunk port possono transitare frame appartenenti a
+piu VLAN. Per distinguere a quale VLAN appartiene ogni frame si usa il tagging 802.1Q.
+
+| Tipo di porta | Uso principale | VLAN trasportate | Frame |
+| --- | --- | --- | --- |
+| Access port | Collegamento di host finali | Una sola VLAN | Non taggati |
+| Trunk port | Collegamento tra apparati di rete | Piu VLAN | Taggati 802.1Q |
+
+### VLAN port based, o untagged
+
+Nelle VLAN port based, dette anche untagged, ogni porta dello switch viene assegnata
+staticamente a una VLAN. Lo switch viene quindi diviso logicamente in piu switch separati.
+
+Il funzionamento e semplice:
+
+- ingress: un frame che entra da una porta appartiene alla VLAN associata a quella porta;
+- forwarding: il frame viene inoltrato solo verso porte della stessa VLAN;
+- egress: il frame esce senza tag, cioe senza modifiche visibili per l'host finale.
+
+Le VLAN untagged non richiedono che gli host conoscano lo standard 802.1Q. Questo e
+importante perche PC, stampanti e dispositivi comuni normalmente inviano e ricevono frame
+Ethernet standard, senza tag VLAN.
+
+Il limite delle VLAN solo port based emerge quando bisogna collegare piu switch: se non si
+usa il trunking, servirebbe un collegamento fisico separato per ogni VLAN da estendere tra
+gli switch.
+
+### VLAN tagged e standard 802.1Q
+
+Le VLAN tagged risolvono il problema del collegamento tra switch. Con lo standard 802.1Q
+piu VLAN possono condividere lo stesso link fisico, chiamato trunk link.
+
+Quando un frame deve attraversare un trunk, lo switch aggiunge un tag 802.1Q che indica
+la VLAN di appartenenza. Lo switch di destinazione legge il tag e sa in quale VLAN inoltrare
+il frame.
+
+Il tag 802.1Q aggiunge 4 byte al frame Ethernet. I campi principali sono:
+
+- TPID, Tag Protocol Identifier: identifica il frame come frame 802.1Q, con valore 0x8100;
+- TCI, Tag Control Information: contiene informazioni di controllo;
+- priority: bit per eventuale priorita del traffico;
+- CFI/DEI: campo di compatibilita/indicazione;
+- VID: 12 bit che contengono il VLAN ID.
+
+Su un trunk:
+
+1. un host invia un frame non taggato allo switch;
+2. lo switch associa il frame alla VLAN della porta access;
+3. se il frame deve passare su un trunk, lo switch aggiunge il tag;
+4. lo switch di arrivo legge il tag;
+5. prima di consegnare il frame a un host finale, il tag viene rimosso.
+
+Nessun frame di una VLAN deve essere inoltrato verso porte appartenenti a un'altra VLAN,
+a meno che non intervenga un dispositivo di livello 3.
+
+### Porte ibride, PVID e apparati non 802.1Q
+
+Lo standard 802.1Q prevede anche porte che possono essere associate a una VLAN in modo
+untagged e ad altre VLAN in modo tagged. In questo caso si parla di porta o link ibrido.
+
+Se un frame arriva senza tag, viene associato alla VLAN configurata come untagged sulla
+porta. Questa VLAN prende il nome di PVID, Port VLAN ID o Private VLAN ID nel materiale.
+
+Gli apparati che non supportano 802.1Q devono essere collegati a porte configurate in
+modalita untagged, cosi possono continuare a usare frame Ethernet ordinari.
+
+### VLAN 1, VLAN dati, VLAN nativa e VLAN di gestione
+
+Alcuni tipi di VLAN importanti sono:
+
+| Tipo di VLAN | Descrizione |
+| --- | --- |
+| VLAN predefinita, o VLAN 1 | VLAN iniziale degli switch; di default tutte le porte appartengono a VLAN 1 |
+| VLAN dati | Trasporta il traffico degli utenti finali, come PC e stampanti |
+| VLAN nativa | VLAN usata su trunk per i frame non taggati |
+| VLAN di gestione | Usata per amministrare switch, router e altri apparati |
+| VLAN voce | Usata per telefoni IP e traffico voce, spesso con QoS |
+
+La VLAN 1 non puo essere eliminata ed e presente di default. Per sicurezza, nelle reti reali
+si tende a non usare VLAN 1 per il traffico utente o per la gestione, ma a creare VLAN
+dedicate.
+
+La VLAN nativa riguarda i collegamenti trunk: se una porta trunk riceve frame senza tag,
+li associa alla VLAN nativa. Su apparati Cisco, se non configurata diversamente, spesso la
+VLAN nativa e la VLAN 1.
+
+La VLAN di gestione deve essere riservata al traffico amministrativo, come SSH o Telnet
+verso gli apparati di rete, e non dovrebbe essere usata per il traffico degli utenti finali.
+
+### UNITA 2 - VTP e inter-VLAN routing
+
+Una VLAN puo essere estesa su due o piu switch tramite collegamenti trunk. In reti grandi,
+configurare manualmente le stesse VLAN su ogni switch puo diventare complesso e puo
+portare facilmente a errori.
+
+Per questo Cisco ha introdotto VTP, VLAN Trunking Protocol.
+
+### Il protocollo VTP
+
+VTP e un protocollo proprietario Cisco che permette di gestire e mantenere coerente la
+configurazione delle VLAN in una rete di switch.
+
+L'idea e questa: le VLAN vengono configurate su uno switch e le informazioni vengono
+distribuite agli altri switch dello stesso dominio VTP. In questo modo si riduce la
+configurazione manuale.
+
+Un dominio VTP e un insieme di switch che si scambiano messaggi VTP, detti
+advertisement, per sincronizzare le informazioni sulle VLAN. Uno switch puo appartenere a
+un solo dominio VTP alla volta.
+
+Parametri importanti:
+
+- VTP version: versione del protocollo, 1, 2 o 3;
+- VTP domain name: nome del dominio VTP;
+- VTP mode: ruolo dello switch;
+- configuration revision: numero di revisione della configurazione;
+- password VTP, se configurata;
+- elenco delle VLAN.
+
+Il comando di verifica citato e:
+
+```text
+show vtp status
+```
+
+### Modalita VTP
+
+VTP puo funzionare in tre modalita principali:
+
+| Modalita | Caratteristiche |
+| --- | --- |
+| Server | Permette di creare, modificare ed eliminare VLAN e distribuisce le modifiche |
+| Client | Riceve e applica le modifiche VTP, poi le inoltra agli altri switch |
+| Transparent | Non applica le modifiche VTP alla propria configurazione, ma puo inoltrare i messaggi |
+
+Di default, molti switch Cisco partono in modalita server.
+
+La configuration revision e un contatore che aumenta ogni volta che viene fatta una
+modifica alle VLAN. Gli switch client applicano una nuova configurazione solo se il numero
+di revisione ricevuto e maggiore di quello attuale.
+
+Per questo bisogna fare attenzione quando si aggiunge uno switch usato in una rete: se ha
+un numero di revisione alto e una configurazione errata, potrebbe propagare informazioni
+sbagliate. Prima di inserirlo conviene riportare la revisione a zero.
+
+### Configurazione VTP: idea generale
+
+Per un VTP server, i passaggi generali sono:
+
+1. verificare lo stato VTP con `show vtp status`;
+2. configurare il nome del dominio con `vtp domain nome`;
+3. configurare versione e password, se richieste;
+4. creare le VLAN;
+5. configurare i collegamenti trunk.
+
+Per un VTP client:
+
+1. verificare che la configurazione sia pulita e la revision sia a 0;
+2. impostare la modalita client con `vtp mode client`;
+3. configurare eventuale password;
+4. verificare le porte trunk;
+5. configurare le porte access per gli host.
+
+### Inter-VLAN routing
+
+Le VLAN separano la rete a livello 2. Questo significa che host in VLAN diverse non possono
+comunicare direttamente solo tramite switch di livello 2.
+
+Per permettere la comunicazione tra VLAN diverse serve un dispositivo di livello 3, come:
+
+- un router;
+- uno switch multilayer.
+
+Questa comunicazione prende il nome di inter-VLAN routing.
+
+### Inter-VLAN tradizionale
+
+Nell'inter-VLAN routing tradizionale il router viene collegato allo switch con piu interfacce
+fisiche, una per ogni VLAN che deve comunicare.
+
+Caratteristiche:
+
+- ogni interfaccia fisica del router e collegata a una VLAN;
+- ogni interfaccia del router ha un indirizzo IP appartenente alla rete della VLAN;
+- le porte dello switch verso il router sono configurate come access port;
+- l'indirizzo del router nella VLAN viene usato come gateway predefinito dagli host.
+
+Esempio: se esistono VLAN 10 e VLAN 20, il router usa due interfacce fisiche: una con IP
+della rete VLAN 10 e una con IP della rete VLAN 20.
+
+Il limite principale e la scalabilita: servono molte porte fisiche sul router e sullo switch,
+una per ogni VLAN.
+
+### Router-on-a-stick
+
+Router-on-a-stick e una soluzione piu efficiente: il router usa una sola interfaccia fisica
+collegata allo switch tramite una porta trunk.
+
+L'interfaccia fisica del router viene divisa in subinterfacce virtuali, una per ogni VLAN.
+Ogni subinterfaccia:
+
+- e associata a una VLAN tramite incapsulamento 802.1Q;
+- ha un indirizzo IP appartenente alla rete di quella VLAN;
+- funziona come gateway per gli host di quella VLAN.
+
+La porta dello switch collegata al router deve essere configurata in modalita trunk, perche
+deve trasportare traffico di piu VLAN.
+
+Esempio concettuale:
+
+- VLAN 10: rete 192.168.10.0/24, gateway 192.168.10.1;
+- VLAN 20: rete 192.168.20.0/24, gateway 192.168.20.1;
+- il router ha una sola interfaccia fisica, ma due subinterfacce, una per VLAN 10 e una per
+  VLAN 20.
+
+Router-on-a-stick riduce il numero di collegamenti fisici, ma tutto il traffico tra VLAN passa
+attraverso la stessa interfaccia fisica, quindi bisogna considerare le prestazioni.
+
+### Confronto tra inter-VLAN tradizionale e Router-on-a-stick
+
+| Aspetto | Inter-VLAN tradizionale | Router-on-a-stick |
+| --- | --- | --- |
+| Collegamenti router-switch | Una porta per ogni VLAN | Un solo trunk |
+| Porte switch verso router | Access port | Trunk port |
+| Configurazione router | Interfacce fisiche separate | Subinterfacce virtuali |
+| Scalabilita | Bassa se le VLAN sono molte | Migliore |
+| Uso tipico | Reti piccole o esempi didattici | Reti con piu VLAN su trunk |
+
+### VLAN in Packet Tracer
+
+In Packet Tracer gli esercizi sulle VLAN di solito richiedono di:
+
+1. creare le VLAN sugli switch;
+2. assegnare le porte access alle VLAN corrette;
+3. configurare i trunk tra switch;
+4. verificare che host nella stessa VLAN comunichino;
+5. verificare che host in VLAN diverse non comunichino senza routing;
+6. configurare inter-VLAN routing tradizionale o Router-on-a-stick;
+7. impostare il gateway corretto sui PC;
+8. testare la comunicazione con `ping`.
+
 ### Parole chiave
 
-VLAN, dominio di broadcast, access port, trunk port, tag 802.1Q, native VLAN, VTP,
-inter-VLAN routing, Router-on-a-stick.
+VLAN, Virtual LAN, dominio di broadcast, VID, VLAN ID, 802.1Q, access port, trunk port,
+access link, trunk link, VLAN untagged, VLAN tagged, tag 802.1Q, TPID, TCI, PVID,
+VLAN 1, default VLAN, native VLAN, VLAN dati, VLAN di gestione, VLAN voce, VTP,
+VTP domain, VTP server, VTP client, VTP transparent, configuration revision,
+inter-VLAN routing, inter-VLAN tradizionale, Router-on-a-stick, subinterface, gateway.
 
 ### Da integrare con le presentazioni
 
-- Differenza precisa tra VLAN tagged e untagged.
 - Comandi Packet Tracer/Cisco per creare VLAN e trunk.
 - Configurazione delle subinterfacce nel Router-on-a-stick.
 - Esempi di progettazione con piu reparti.
@@ -1678,7 +1969,8 @@ progettazione di rete.
 - Presentazione Modulo II - Email, DNS e Telnet/SSH: integrata.
 - Presentazione Modulo II - Protocollo HTTP e cenni HTTPS: integrata.
 - Presentazione Modulo II - DHCP: da integrare, se presente.
-- Presentazione Modulo III: da integrare.
+- Presentazione Modulo III - Virtual LAN: integrata.
+- Presentazione Modulo III - VTP e Inter-VLAN Routing: integrata.
 - Presentazione Modulo IV: da integrare.
 - Presentazione Modulo V: da integrare.
 - Presentazione Modulo VI: da integrare.
