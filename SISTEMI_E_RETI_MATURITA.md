@@ -1908,18 +1908,290 @@ Non serve conoscere a memoria tutti i dettagli matematici: per l'esame e importa
 ricordare che AES e un cifrario simmetrico a blocchi moderno, molto piu sicuro di DES e
 usato in moltissimi sistemi reali.
 
-### Anticipazione: crittografia asimmetrica
+### UNITA 2 - Crittografia asimmetrica, RSA e crittografia ibrida
 
-La crittografia simmetrica e efficiente, ma presenta il problema dello scambio della chiave.
-La crittografia asimmetrica nasce per affrontare questo problema usando una coppia di
-chiavi:
+La crittografia simmetrica e veloce, ma ha un problema fondamentale: mittente e
+destinatario devono scambiarsi una chiave segreta senza che nessuno la intercetti.
 
-- chiave pubblica, distribuibile a tutti;
-- chiave privata, conosciuta solo dal proprietario.
+Diffie e Hellman proposero una soluzione rivoluzionaria: usare meccanismi matematici che
+permettono di ottenere una chiave condivisa anche comunicando su un canale non sicuro.
 
-Un messaggio cifrato con la chiave pubblica del destinatario puo essere decifrato solo con
-la sua chiave privata. Questo concetto verra approfondito con RSA, Diffie-Hellman, firma
-digitale e certificati.
+### Diffie-Hellman
+
+Diffie-Hellman non e un cifrario per cifrare direttamente messaggi: e uno schema per
+stabilire una chiave segreta condivisa tra due soggetti.
+
+L'idea e che Alice e Bob combinano:
+
+- informazioni pubbliche, visibili anche a un eventuale intercettatore;
+- informazioni private, conosciute solo da ciascuno di loro.
+
+Alla fine entrambi ottengono la stessa chiave segreta, mentre chi osserva la comunicazione
+non riesce a ricostruirla in tempi pratici. La sicurezza si basa sulla difficolta di risolvere
+alcuni problemi matematici, come il logaritmo discreto.
+
+Questa chiave condivisa puo poi essere usata con un algoritmo simmetrico, come AES, per
+cifrare i dati veri e propri.
+
+### Crittografia asimmetrica o a chiave pubblica
+
+La crittografia asimmetrica usa due chiavi diverse ma collegate:
+
+- chiave pubblica: puo essere distribuita a tutti;
+- chiave privata: deve restare segreta e conosciuta solo dal proprietario.
+
+Le proprieta principali sono:
+
+- dalla chiave pubblica non si deve poter risalire alla chiave privata in tempi pratici;
+- cio che viene cifrato con una chiave puo essere decifrato solo con l'altra chiave della
+  coppia;
+- per inviare un messaggio segreto a qualcuno, si usa la sua chiave pubblica;
+- il destinatario decifra il messaggio con la propria chiave privata.
+
+Esempio: se Anna vuole inviare un messaggio riservato a Bruno, cifra il messaggio con la
+chiave pubblica di Bruno. Solo Bruno, con la propria chiave privata, puo decifrarlo.
+
+Il problema diventa: come essere sicuri che una certa chiave pubblica appartenga davvero a
+Bruno? La risposta e l'uso di certificati digitali e Certification Authority.
+
+### Vantaggi e svantaggi della crittografia asimmetrica
+
+Vantaggi:
+
+- non serve condividere prima una chiave segreta;
+- la chiave pubblica puo essere distribuita liberamente;
+- permette riservatezza, autenticazione e firma digitale;
+- semplifica la comunicazione sicura tra soggetti che non si conoscono.
+
+Svantaggi:
+
+- e molto piu lenta della crittografia simmetrica;
+- richiede chiavi lunghe e calcoli complessi;
+- serve un sistema affidabile per certificare le chiavi pubbliche.
+
+Per questo, nella pratica, la crittografia asimmetrica viene spesso usata solo per scambiare
+una chiave simmetrica o per firmare, mentre i dati veri e propri vengono cifrati con
+algoritmi simmetrici.
+
+### RSA
+
+RSA e uno degli algoritmi asimmetrici piu famosi. Il nome deriva dai suoi ideatori:
+Rivest, Shamir e Adleman.
+
+La sicurezza di RSA si basa sulla difficolta di fattorizzare numeri molto grandi. E facile
+moltiplicare due numeri primi grandi, ottenendo un numero `n`; e invece molto difficile,
+partendo da `n`, risalire ai due fattori primi originari.
+
+RSA comprende due parti:
+
+- generazione delle chiavi;
+- cifratura e decifratura.
+
+Nella generazione delle chiavi:
+
+1. si scelgono due numeri primi molto grandi `p` e `q`;
+2. si calcola `n = p * q`;
+3. si calcola la funzione di Eulero `phi(n) = (p - 1)(q - 1)`;
+4. si sceglie un esponente pubblico `e`;
+5. si calcola l'esponente privato `d`;
+6. la chiave pubblica e la coppia `(e, n)`;
+7. la chiave privata e la coppia `(d, n)`.
+
+Per l'esame non e necessario saper svolgere tutti i calcoli: e importante capire che RSA
+usa una chiave pubblica per cifrare o verificare e una chiave privata per decifrare o firmare.
+
+Nelle applicazioni reali i numeri usati sono molto grandi. Chiavi troppo corte non sono piu
+sicure; chiavi piu lunghe aumentano la sicurezza ma rendono i calcoli piu pesanti.
+
+### Crittografia ibrida
+
+La crittografia ibrida unisce i vantaggi della crittografia simmetrica e asimmetrica.
+
+L'idea e:
+
+- usare la crittografia asimmetrica per scambiare in modo sicuro una chiave di sessione;
+- usare la crittografia simmetrica, piu veloce, per cifrare i dati.
+
+Esempio:
+
+1. Anna genera una chiave casuale di sessione;
+2. Anna cifra la chiave di sessione con la chiave pubblica di Bruno;
+3. Bruno decifra la chiave di sessione con la propria chiave privata;
+4. da quel momento Anna e Bruno usano la chiave di sessione con un algoritmo simmetrico.
+
+Questo sistema e usato in molti protocolli reali perche evita il problema dello scambio
+della chiave e mantiene buone prestazioni.
+
+### UNITA 3 - Sistemi di autenticazione, firma digitale e certificati
+
+Non sempre serve mantenere segreto un documento. A volte e piu importante garantire:
+
+- autenticita: il documento proviene davvero da chi dice di averlo inviato;
+- integrita: il documento non e stato modificato;
+- non ripudio: il mittente non puo negare di averlo inviato.
+
+Queste garanzie possono essere ottenute con la firma digitale.
+
+### Firma digitale
+
+La firma digitale e l'equivalente informatico della firma su carta. Viene usata per
+sottoscrivere documenti digitali e, in determinati contesti, ha valore legale.
+
+Si basa sulla crittografia asimmetrica:
+
+- il firmatario usa la propria chiave privata;
+- chiunque puo verificare la firma usando la chiave pubblica del firmatario.
+
+La firma digitale:
+
+- autentica l'origine dei dati;
+- garantisce l'integrita del documento;
+- collega il documento al soggetto che lo ha firmato.
+
+La firma digitale puo essere usata con dispositivi fisici, come smart card o token USB,
+oppure con sistemi di firma remota, SPID e codici OTP. In ambito italiano si incontrano
+anche CNS e CIE per l'accesso ai servizi digitali.
+
+### Funzioni di hash
+
+Poiche gli algoritmi asimmetrici sono lenti, non si firma direttamente l'intero documento.
+Prima si calcola una sua impronta digitale tramite una funzione di hash.
+
+Una funzione di hash prende dati di qualunque lunghezza e produce una stringa di
+lunghezza fissa, detta digest o impronta.
+
+Proprieta importanti:
+
+- unidirezionalita: dato il documento e facile calcolare l'hash, ma dall'hash deve essere
+  difficile risalire al documento;
+- resistenza alle collisioni: deve essere estremamente difficile trovare due documenti
+  diversi con la stessa impronta.
+
+Esempi di funzioni di hash:
+
+- MD5: oggi vulnerabile e non raccomandato per usi critici;
+- SHA-1: non piu considerato sicuro;
+- SHA-2 e SHA-3: famiglie moderne ancora usate.
+
+### Generazione della firma digitale
+
+Il processo di firma avviene in tre passaggi:
+
+1. si applica una funzione di hash al documento, ottenendo il digest;
+2. il digest viene cifrato con la chiave privata del firmatario;
+3. la firma viene allegata al documento, spesso insieme al certificato digitale del
+   firmatario.
+
+In questo modo la firma e legata:
+
+- al documento, perche dipende dal suo hash;
+- al firmatario, perche viene generata con la sua chiave privata.
+
+Nei sistemi di firma italiani si possono incontrare file firmati con estensione `.p7m`.
+
+### Verifica della firma digitale
+
+Chi riceve un documento firmato verifica la firma cosi:
+
+1. usa la chiave pubblica del firmatario, ottenuta dal certificato digitale, per decifrare la
+   firma e recuperare il digest originale;
+2. calcola di nuovo l'hash del documento ricevuto;
+3. confronta i due digest.
+
+Se i digest coincidono, il documento non e stato modificato e la firma corrisponde alla
+chiave privata associata alla chiave pubblica del firmatario.
+
+La firma digitale da sola non garantisce la riservatezza: un documento firmato puo essere
+leggibile. Se serve anche segretezza, il documento deve essere anche cifrato.
+
+### Certificati digitali
+
+Un certificato digitale e un file con validita temporale limitata che collega l'identita di un
+soggetto alla sua chiave pubblica.
+
+Serve a risolvere il problema fondamentale della crittografia asimmetrica: come posso
+sapere che una chiave pubblica appartiene davvero a una certa persona o a un certo server?
+
+Un certificato digitale contiene in genere:
+
+- informazioni sul soggetto, persona o server;
+- chiave pubblica del soggetto;
+- numero di serie;
+- periodo di validita;
+- informazioni sulla Certification Authority;
+- firma digitale della CA.
+
+Il certificato attesta che le informazioni contenute sono state verificate da un'autorita
+fidata.
+
+Formati diffusi:
+
+- certificati X.509, tipici delle PKI e dei certificati web;
+- chiavi/certificati PGP o GPG, spesso usati per posta e file.
+
+### Certification Authority, RA e PKI
+
+La Certification Authority, CA, e un ente fidato che rilascia, firma, sospende e revoca
+certificati digitali.
+
+La CA firma i certificati con la propria chiave privata. I browser e i sistemi operativi
+possiedono gia le chiavi pubbliche di molte CA fidate: in questo modo possono verificare se
+un certificato e autentico.
+
+La Registration Authority, RA, si occupa dell'identificazione del soggetto che richiede il
+certificato. Dopo le verifiche, la CA puo emettere il certificato.
+
+La PKI, Public Key Infrastructure, e l'insieme di tecnologie, procedure e autorita che
+gestisce i certificati di chiave pubblica. Di solito ha una struttura gerarchica:
+
+- root CA, al vertice, spesso con certificato self-signed;
+- CA intermedie;
+- certificati finali, associati a utenti, server o servizi.
+
+Questa struttura crea una catena di fiducia: se mi fido della root CA, posso verificare le CA
+intermedie e poi il certificato finale.
+
+### Uso dei certificati nei server web
+
+Quando un browser apre una connessione sicura con un server:
+
+1. il client richiede una connessione protetta;
+2. il server invia il proprio certificato digitale;
+3. il browser verifica la firma del certificato usando la chiave pubblica della CA;
+4. se la verifica e positiva, il browser considera autentica la chiave pubblica del server;
+5. la chiave pubblica del server viene usata per stabilire una chiave di sessione;
+6. i dati successivi vengono cifrati con la chiave di sessione.
+
+Se il certificato e scaduto, non valido, autofirmato o emesso da una CA non riconosciuta, il
+browser mostra un avviso di sicurezza.
+
+### Richiesta di un certificato
+
+La procedura tipica per ottenere un certificato e:
+
+1. il richiedente genera una coppia di chiavi;
+2. la chiave privata resta segreta sul suo dispositivo o server;
+3. la chiave pubblica viene inserita in una CSR, Certificate Signing Request, insieme ai dati
+   identificativi;
+4. la RA verifica l'identita del richiedente;
+5. la CA emette il certificato e lo firma con la propria chiave privata;
+6. il certificato viene installato sul server o consegnato all'utente.
+
+### PGP/GPG e strumenti pratici
+
+PGP, Pretty Good Privacy, e GPG, GNU Privacy Guard, sono strumenti usati per cifrare e
+firmare messaggi, e-mail e file tramite crittografia a chiave pubblica.
+
+A differenza dei certificati X.509, che dipendono da CA e PKI, il mondo PGP/GPG puo
+basarsi anche su modelli di fiducia diversi, come la fiducia tra utenti.
+
+Esempi di strumenti citati:
+
+- Kleopatra/Gpg4win per gestire chiavi OpenPGP e firmare/cifrare file o e-mail;
+- 7-Zip o PeaZip per creare archivi cifrati;
+- VeraCrypt per cifrare volumi o dischi;
+- BitLocker e FileVault per cifratura integrata nei sistemi operativi;
+- Bitwarden e KeePassXC per gestire password in modo sicuro.
 
 ### Parole chiave
 
@@ -1928,16 +2200,12 @@ attacco passivo, attacco attivo, eavesdropping, tampering, masquerading, DoS,
 crittografia, testo in chiaro, crittogramma, cifrario, chiave, Kerckhoffs, crittografia
 simmetrica, chiave segreta, cifrario a flusso, keystream, PRNG, seed, XOR, cifrario a
 blocchi, Cesare, Vigenere, Vernam, One Time Pad, crittoanalisi, forza bruta, DES, AES,
-chiave pubblica, chiave privata, RSA, Diffie-Hellman, hash, firma digitale, certificato
-digitale, CA, PKI, PGP.
+chiave pubblica, chiave privata, RSA, Diffie-Hellman, chiave di sessione, crittografia
+ibrida, hash, digest, MD5, SHA, firma digitale, smart card, token USB, OTP, certificato
+digitale, X.509, CA, RA, PKI, root CA, CSR, catena di fiducia, PGP, GPG.
 
 ### Da integrare con le presentazioni
 
-- Crittografia asimmetrica in dettaglio.
-- RSA e Diffie-Hellman.
-- Funzionamento della firma digitale passo per passo.
-- Differenza tra hash, cifratura e firma.
-- Catena di fiducia dei certificati digitali.
 - Esempi con PGP/GPG in macchina virtuale.
 
 ---
@@ -2209,7 +2477,8 @@ progettazione di rete.
 - Presentazione Modulo III - Virtual LAN: integrata.
 - Presentazione Modulo III - VTP e Inter-VLAN Routing: integrata.
 - Presentazione Modulo IV - Crittografia simmetrica, DES e AES: integrata.
-- Presentazione Modulo IV - Crittografia asimmetrica, hash, firma e certificati: da integrare, se presenti.
+- Presentazione Modulo IV - Crittografia asimmetrica, Diffie-Hellman, RSA e ibrida: integrata.
+- Presentazione Modulo IV - Sistemi di autenticazione, firma, hash, certificati e PKI: integrata.
 - Presentazione Modulo V: da integrare.
 - Presentazione Modulo VI: da integrare.
 - Presentazione Modulo VII: da integrare.
