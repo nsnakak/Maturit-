@@ -818,20 +818,330 @@ In Packet Tracer una configurazione FTP tipica prevede:
 Esercizio tipico: creare file su PC1, caricarli sul server FTP, rinominarli, accedere da PC2
 e scaricarli, verificando che siano presenti sul secondo PC.
 
+### UNITA 2 - Posta elettronica, DNS e Telnet/SSH
+
+La posta elettronica e uno dei servizi di rete piu diffusi. Il principio e simile alla posta
+ordinaria: un utente invia un messaggio all'indirizzo di un altro utente, che lo riceve nella
+propria casella.
+
+I vantaggi principali dell'e-mail sono:
+
+- velocita di invio e ricezione;
+- costo ridotto, legato solo alla connessione;
+- possibilita di inviare lo stesso messaggio a piu destinatari;
+- possibilita di allegare file di vario tipo, come documenti, immagini, video o programmi.
+
+### Indirizzo e account di posta
+
+Per usare la posta elettronica servono un indirizzo e una casella postale. La casella e uno
+spazio sul server del provider in cui vengono depositati automaticamente i messaggi in
+arrivo.
+
+Un account di posta comprende:
+
+- indirizzo e-mail;
+- userid o identificativo utente;
+- password;
+- server di invio;
+- server di ricezione.
+
+Un indirizzo e-mail ha la forma:
+
+`nomeutente@dominio`
+
+Esempio:
+
+`mariorossi@tin.it`
+
+- `mariorossi`: nome utente, univoco all'interno del dominio;
+- `@`: simbolo "at", cioe "presso";
+- `tin.it`: dominio del provider o dell'organizzazione.
+
+In genere sono ammessi punti e underscore, mentre non sono ammessi spazi, caratteri
+accentati e molti simboli speciali.
+
+### Struttura di un messaggio e-mail
+
+Un messaggio di posta e formato da intestazione e corpo.
+
+Nell'intestazione possono comparire campi come:
+
+- From: mittente;
+- To: destinatario principale;
+- Cc: destinatari in copia conoscenza;
+- Ccn/Bcc: destinatari in copia nascosta;
+- Date: data di spedizione;
+- Reply-To: indirizzo a cui rispondere;
+- Subject: oggetto del messaggio.
+
+Dopo l'header c'e una linea vuota e poi il body, cioe il testo vero e proprio del messaggio.
+
+### Web mail, POP mail e IMAP mail
+
+L'accesso alla posta puo avvenire in due modi principali:
+
+- web mail: si usa un browser e ci si collega al sito del provider, per esempio Gmail o
+  Outlook;
+- POP mail o IMAP mail: si usa un client di posta, detto MUA, come Outlook,
+  Thunderbird o l'app Mail dello smartphone.
+
+La web mail e comoda perche permette l'accesso da qualsiasi computer connesso a
+Internet. I messaggi non vengono scaricati localmente: restano sul server e vengono
+gestiti tramite HTTP/HTTPS dal browser.
+
+POP3, Post Office Protocol versione 3, permette al client di scaricare i messaggi dal server
+sul computer locale. Di solito, dopo il download, i messaggi vengono eliminati dal server,
+anche se si puo scegliere di lasciarne una copia.
+
+IMAP, Internet Message Access Protocol, permette invece di gestire i messaggi direttamente
+sul server. Le cartelle restano sincronizzate tra piu dispositivi, quindi e piu comodo quando
+si usa la stessa casella da computer, smartphone e web mail.
+
+| Aspetto | POP3 | IMAP |
+| --- | --- | --- |
+| Gestione messaggi | Scarica i messaggi sul client | Mantiene e sincronizza i messaggi sul server |
+| Uso da piu dispositivi | Meno comodo | Molto comodo |
+| Spazio sul server | Si libera piu facilmente | Viene usato di piu |
+| Accesso offline | Possibile sui messaggi scaricati | Possibile con sincronizzazione locale |
+| Porte | 110, oppure 995 con SSL/TLS | 143, oppure 993 con SSL/TLS |
+
+### SMTP, POP3, IMAP, MUA, MTA e MDA
+
+La posta elettronica usa piu componenti.
+
+Il MUA, Mail User Agent, e il programma usato dall'utente per scrivere, inviare, leggere e
+gestire i messaggi. Esempi sono Outlook, Thunderbird o un'interfaccia web mail.
+
+Il MTA, Mail Transport Agent, e il servizio server che trasferisce i messaggi tra server di
+posta. Se non puo consegnare direttamente il messaggio al server del destinatario, lo
+inoltra fino a raggiungere il server corretto.
+
+Il MDA, Mail Delivery Agent, riceve i messaggi dall'MTA, li filtra, per esempio contro spam
+e virus, e li deposita nelle caselle dei destinatari.
+
+I protocolli principali sono:
+
+- SMTP, Simple Mail Transfer Protocol: invio dei messaggi e trasferimento tra server;
+- POP3: scaricamento della posta dal server al client;
+- IMAP: gestione e sincronizzazione della posta sul server.
+
+Porte principali:
+
+| Protocollo | Uso | Porte |
+| --- | --- | --- |
+| SMTP | Invio e trasferimento posta | 25, 465 con SSL, 587 con STARTTLS |
+| POP3 | Ricezione/scaricamento posta | 110, 995 con SSL/TLS |
+| IMAP | Gestione remota della posta | 143, 993 con SSL/TLS |
+
+### Schema di invio e ricezione di una mail
+
+Esempio: Mario invia un messaggio a Laura.
+
+1. Mario scrive il messaggio con il proprio MUA.
+2. Il MUA invia il messaggio al server SMTP di Mario.
+3. Il server SMTP di Mario trasferisce il messaggio al server di posta di Laura.
+4. Il server di Laura verifica che esista la casella del destinatario.
+5. Il messaggio viene depositato nella mailbox di Laura.
+6. Laura accede alla casella tramite POP3, IMAP o web mail.
+
+SMTP usa TCP per avere trasferimento affidabile. Lo scambio avviene tramite comandi e
+risposte testuali, con tre fasi: handshaking, trasferimento di uno o piu messaggi e chiusura.
+
+### MIME
+
+MIME, Multipurpose Internet Mail Extensions, e uno standard che estende la posta
+elettronica, nata inizialmente per gestire testo semplice in ASCII.
+
+Grazie a MIME e possibile inviare:
+
+- allegati multipli;
+- messaggi lunghi;
+- caratteri diversi dall'ASCII, come UTF-8;
+- testi formattati;
+- file binari, immagini, audio, video ed eseguibili.
+
+I dati binari o multimediali devono essere convertiti in una forma trasmissibile tramite
+posta, per esempio usando la codifica Base64. Essere compatibile MIME e una
+caratteristica del MUA.
+
+### Il DNS, Domain Name System
+
+DNS, Domain Name System, e il servizio che traduce i nomi simbolici, facili da ricordare
+per gli utenti, in indirizzi IP, usati dai dispositivi di rete.
+
+Esempi di nomi simbolici:
+
+- `www.google.com`;
+- `www.tulliobuzzi.edu.it`;
+- `mario.rossi@unina.it`.
+
+I router non possono instradare i pacchetti usando direttamente questi nomi: hanno bisogno
+degli indirizzi IP. Per questo serve la risoluzione dei nomi.
+
+Il DNS comprende:
+
+- un database distribuito e gerarchico;
+- una gerarchia di server DNS, detti name server;
+- un protocollo applicativo per la comunicazione tra host e server DNS.
+
+Normalmente DNS usa UDP sulla porta 53. In alcuni casi, per esempio trasferimenti di zona
+o risposte molto grandi, puo usare TCP sulla stessa porta.
+
+### Funzioni del DNS
+
+Le funzioni principali del DNS sono:
+
+- tradurre nomi simbolici in indirizzi IP;
+- effettuare la risoluzione inversa, cioe da IP a nome;
+- gestire alias;
+- aiutare nella distribuzione del carico.
+
+Un alias e un nome alternativo associato a un host. Per esempio, un sito puo avere un nome
+canonico e piu alias che puntano allo stesso servizio. Questo semplifica l'uso e permette di
+cambiare l'indirizzo reale senza modificare il nome usato dagli utenti.
+
+Per il bilanciamento del carico, un nome puo essere associato a piu indirizzi IP. Il DNS puo
+rispondere ruotando l'ordine degli indirizzi: questa tecnica e detta DNS Round Robin. In
+questo modo client diversi possono collegarsi a server diversi senza accorgersi della
+distribuzione.
+
+### Domini e gerarchia DNS
+
+I nomi DNS sono organizzati gerarchicamente e le parti sono separate da punti.
+
+Esempio:
+
+`lab1.tulliobuzzi.edu.it`
+
+- `lab1`: nome dell'host;
+- `tulliobuzzi.edu.it`: dominio;
+- `.it`: dominio di primo livello nazionale;
+- `.edu.it`: sottodominio riservato alle istituzioni scolastiche italiane.
+
+Nel DNS la parte piu significativa e a destra. I nomi non distinguono maiuscole e minuscole.
+Ogni componente puo arrivare a 63 caratteri, mentre il nome completo non puo superare
+255 caratteri.
+
+La gerarchia dei server DNS comprende:
+
+- root server: sono al vertice e conoscono gli indirizzi dei server TLD;
+- server TLD, Top-Level Domain: gestiscono domini come `.com`, `.it`, `.org`, `.edu`;
+- server autorevoli, o authoritative name server: hanno autorita su una zona e forniscono
+  la risposta finale;
+- server DNS locali: non appartengono strettamente alla gerarchia, ma ricevono le query
+  degli host e interrogano gli altri server per conto del client.
+
+In genere un dominio ha almeno un server primario e uno secondario per ridondanza e
+affidabilita.
+
+### Risoluzione dei nomi, query e caching
+
+Quando un client vuole conoscere l'indirizzo IP di un nome, usa un programma detto
+resolver. Il resolver interroga il server DNS configurato sul client, di solito il DNS locale
+del provider o della rete.
+
+Esempio semplificato per `www.amazon.com`:
+
+1. il client chiede al DNS locale l'indirizzo di `www.amazon.com`;
+2. il DNS locale interroga un root server;
+3. il root server indica i server TLD per `.com`;
+4. il DNS locale interroga un server TLD `.com`;
+5. il TLD indica il server autorevole per `amazon.com`;
+6. il server autorevole restituisce l'IP di `www.amazon.com`;
+7. il DNS locale restituisce la risposta al client.
+
+Le query possono essere:
+
+- ricorsive: il server interrogato si occupa di trovare la risposta completa;
+- iterative: il server risponde con la migliore informazione disponibile, indicando quale
+  altro server interrogare.
+
+DNS usa il caching per ridurre ritardi e traffico. Quando un server DNS impara una
+mappatura, la memorizza per un certo periodo. Scaduto il tempo di validita, l'informazione
+viene eliminata o aggiornata. Il parametro che stabilisce la durata della cache e il TTL,
+Time To Live.
+
+### Record DNS
+
+Le informazioni DNS sono memorizzate come Resource Record, RR. Un messaggio DNS puo
+contenere piu record.
+
+Record comuni:
+
+| Record | Significato |
+| --- | --- |
+| A | Associa un nome a un indirizzo IPv4 |
+| AAAA | Associa un nome a un indirizzo IPv6 |
+| CNAME | Alias verso un nome canonico |
+| MX | Server di posta responsabile per un dominio |
+| NS | Name server autorevole per una zona |
+| PTR | Risoluzione inversa da IP a nome |
+| TXT | Informazioni testuali, spesso usate anche per verifiche e sicurezza |
+
+Per verificare il DNS si possono usare strumenti come `nslookup`, `host` e `dig`.
+
+### Telnet e SSH
+
+Telnet e un protocollo applicativo client-server basato su TCP che permette di aprire una
+sessione bidirezionale tra due host. Dopo la connessione, il client puo lavorare sulla
+macchina remota tramite linea di comando come se fosse collegato direttamente.
+
+Telnet usa la porta 23 e richiede che sul server sia in esecuzione un servizio in ascolto,
+come `telnetd`.
+
+Il problema principale di Telnet e la sicurezza: la comunicazione non e cifrata, quindi dati,
+comandi e password viaggiano in chiaro e possono essere intercettati.
+
+Per questo Telnet e stato quasi completamente sostituito da SSH, Secure Shell. SSH offre
+le funzioni di Telnet ma aggiunge:
+
+- cifratura della comunicazione;
+- autenticazione sicura;
+- possibilita di autenticazione a chiave pubblica;
+- protezione dell'intera sessione.
+
+SSH e oggi uno standard di fatto per l'amministrazione remota dei sistemi.
+
+Esempi di comandi:
+
+| Comando | Uso |
+| --- | --- |
+| `telnet host` | Connessione Telnet alla porta 23 |
+| `telnet host porta` | Connessione Telnet a una porta specifica |
+| `ssh hostname` | Accesso SSH con l'utente corrente |
+| `ssh utente@hostname` | Accesso SSH con un utente specifico |
+
+### Comandi di rete utili
+
+Alcuni comandi utili per diagnosi e prove di rete:
+
+| Comando | Funzione |
+| --- | --- |
+| `hostname` | Mostra il nome del computer |
+| `ping host` | Verifica la raggiungibilita di un host |
+| `tracert host` o `traceroute host` | Mostra il percorso verso una destinazione |
+| `host nome` | Interroga il DNS |
+| `dig nome` | Interroga il DNS in modo dettagliato |
+| `dig -x IP` | Risoluzione inversa |
+| `nslookup nome` | Verifica record DNS |
+| `mail indirizzo` | Invio semplice di posta da terminale |
+| `ftp host` | Avvia un client FTP |
+| `wget URL` | Scarica file dal Web in modo non interattivo |
+
 ### Parole chiave
 
 Applicazione distribuita, processo, user agent, protocollo applicativo, client-server,
 server farm, virtualizzazione, peer-to-peer, P2P centralizzato, P2P ibrido, super-peer,
 API, socket, HTTP, HTTPS, WWW, browser, web server, URI, URL, cache, FTP, FTPS,
-SFTP, upload, download, modalita attiva, modalita passiva, SMTP, POP3, IMAP, MIME,
-DHCP, lease, DNS, record, risoluzione dei nomi.
+SFTP, upload, download, modalita attiva, modalita passiva, e-mail, account, mailbox,
+MUA, MTA, MDA, SMTP, POP3, IMAP, MIME, Base64, DNS, resolver, name server, root
+server, TLD, authoritative server, DNS locale, cache DNS, TTL, record A, AAAA, CNAME,
+MX, NS, PTR, Telnet, SSH, DHCP, lease, risoluzione dei nomi.
 
 ### Da integrare con le presentazioni
 
 - Sequenza DORA del DHCP.
 - Metodi e codici di stato HTTP.
-- Differenze tra web mail, POP3 e IMAP.
-- Tipi di record DNS.
 - Esempi Packet Tracer su DHCP, DNS, SMTP/POP3 e WWW.
 
 ---
@@ -1197,7 +1507,8 @@ progettazione di rete.
 - Presentazione Modulo I - Trasporto e UDP: integrata.
 - Presentazione Modulo I - Trasferimento affidabile e TCP: integrata.
 - Presentazione Modulo II - Livello applicazioni, WWW e FTP: integrata.
-- Presentazione Modulo II - DHCP, HTTP dettagliato, posta e DNS: da integrare, se presenti.
+- Presentazione Modulo II - Email, DNS e Telnet/SSH: integrata.
+- Presentazione Modulo II - DHCP e HTTP dettagliato: da integrare, se presenti.
 - Presentazione Modulo III: da integrare.
 - Presentazione Modulo IV: da integrare.
 - Presentazione Modulo V: da integrare.
