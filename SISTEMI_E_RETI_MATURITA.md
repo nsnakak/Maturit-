@@ -279,19 +279,216 @@ solo il contenuto UDP, ma anche che il segmento sia arrivato tra gli host corret
 Il checksum rileva errori, ma UDP non effettua ritrasmissioni automatiche. L'eventuale
 recupero deve essere gestito dall'applicazione, se necessario.
 
+### UNITA 2 - Il trasferimento affidabile e il protocollo TCP
+
+Il trasferimento affidabile e l'insieme dei meccanismi che permettono di consegnare i dati
+correttamente anche se la rete sottostante puo perdere, duplicare o consegnare fuori ordine
+i pacchetti.
+
+Un servizio di trasferimento e considerato affidabile quando garantisce:
+
+- consegna: tutti i messaggi arrivano a destinazione senza errori; se non e possibile, il
+  mittente deve esserne informato;
+- assenza di duplicazione: ogni messaggio viene consegnato una sola volta;
+- sequenzialita: i messaggi vengono consegnati nello stesso ordine in cui sono stati
+  trasmessi.
+
+Per realizzare queste garanzie si usano vari meccanismi:
+
+- numerazione dei segmenti trasmessi;
+- messaggi di riscontro, cioe ACK;
+- timer e temporizzazioni in trasmissione;
+- ritrasmissione dei segmenti non confermati;
+- finestre di trasmissione e ricezione.
+
+### RTT e RTO
+
+Due parametri importanti del trasferimento affidabile sono RTT e RTO.
+
+RTT, Round Trip Time, e il tempo che passa tra l'inizio della trasmissione di un segmento e
+la ricezione del relativo riscontro. In pratica misura il tempo di andata e ritorno di un dato
+e del suo ACK.
+
+RTO, Retransmission Time Out, e il tempo massimo che il mittente aspetta prima di
+considerare perso un segmento. Se entro il RTO non arriva l'ACK, il segmento viene
+ritrasmesso.
+
+Un RTO troppo basso causa ritrasmissioni inutili; un RTO troppo alto rallenta il recupero
+degli errori. Per questo TCP lo adatta in base alle condizioni della rete.
+
+### Numerazione dei segmenti
+
+TCP numera i dati usando il Sequence Number, indicato anche come SN o Seq. Il Sequence
+Number non identifica genericamente il segmento, ma indica la posizione nel flusso del
+primo byte contenuto nel segmento.
+
+Il ricevente controlla il Sequence Number:
+
+- se il numero e quello atteso, i dati possono essere passati al livello superiore;
+- se il numero e minore di quello atteso, il dato e gia stato ricevuto e viene considerato un
+  duplicato;
+- se il numero e maggiore di quello atteso, significa che manca qualche segmento
+  precedente: il dato puo essere memorizzato temporaneamente in attesa dei segmenti
+  mancanti.
+
+Questo meccanismo permette di ricostruire correttamente il flusso anche quando i segmenti
+arrivano fuori ordine.
+
+### ACK e riscontro cumulativo
+
+Il riscontro viene inviato con un Acknowledgement Number, o ACKn. L'ACKn indica il
+numero del prossimo byte che il ricevente si aspetta di ricevere.
+
+Per esempio, se il ricevente ha ricevuto correttamente tutti i byte fino al numero 999,
+invia un ACK con valore 1000, per dire: "ho ricevuto tutto fino a 999, ora aspetto il byte
+1000".
+
+Il riscontro puo essere cumulativo: un solo ACK puo confermare la ricezione corretta di piu
+segmenti consecutivi. Questo riduce il numero di messaggi di controllo necessari.
+
+### Il protocollo TCP
+
+TCP, Transmission Control Protocol, e un protocollo di trasporto punto-punto, orientato
+alla connessione e affidabile. La comunicazione avviene tra due estremi, di solito un client
+e un server.
+
+Le sue caratteristiche principali sono:
+
+- connection oriented: prima dello scambio dei dati viene aperta una connessione;
+- affidabile: gestisce ACK, ritrasmissioni, numerazione e controllo degli errori;
+- sequenziale: consegna i dati all'applicazione nell'ordine corretto;
+- full-duplex: permette trasmissione contemporanea in entrambe le direzioni;
+- orientato al flusso: vede i dati come una sequenza continua di byte.
+
+Dopo l'apertura della connessione avviene la comunicazione vera e propria. Alla fine, la
+connessione viene chiusa con un'apposita procedura di terminazione.
+
+### Segmento TCP
+
+Il segmento TCP contiene un header piu complesso di quello UDP, perche deve supportare
+affidabilita, controllo della connessione e controllo del flusso.
+
+I campi principali sono:
+
+| Campo | Funzione |
+| --- | --- |
+| Source Port | Porta del processo mittente |
+| Destination Port | Porta del processo destinatario |
+| Sequence Number | Numero del primo byte del segmento |
+| Acknowledgement Number | Prossimo byte atteso dal ricevente |
+| Header Length | Lunghezza dell'header TCP |
+| Flags | Bit di controllo della connessione |
+| Window Size | Dimensione della finestra di ricezione |
+| Checksum | Controllo degli errori |
+| Urgent Pointer | Usato con dati urgenti |
+| Options | Parametri opzionali, come MSS |
+
+Le flag piu importanti sono:
+
+- SYN: richiesta di apertura della connessione;
+- ACK: conferma di ricezione;
+- FIN: richiesta di chiusura ordinata della connessione;
+- RST: reset immediato della connessione;
+- PSH: richiesta di consegna rapida dei dati all'applicazione;
+- URG: segnala la presenza di dati urgenti.
+
+### MSS e MTU
+
+MSS, Maximum Segment Size, indica la massima dimensione del corpo dati, cioe del payload,
+che puo essere inserito in un segmento TCP.
+
+Nelle reti Ethernet IPv4 il valore tipico della MTU, Maximum Transmission Unit, e 1500
+byte. Se si sottraggono 20 byte di header IP e 20 byte di header TCP, si ottiene una MSS
+tipica di 1460 byte.
+
+La MSS riguarda quindi solo i dati TCP, mentre la MTU riguarda la dimensione massima del
+frame/pacchetto trasportabile sul mezzo di rete.
+
+### Apertura della connessione TCP: three-way handshaking
+
+TCP apre una connessione tramite three-way handshaking, cioe uno scambio iniziale di tre
+messaggi che permette a client e server di sincronizzare i numeri di sequenza e concordare
+i parametri della connessione.
+
+La procedura e:
+
+1. SYN: il client invia un segmento con flag SYN e un numero di sequenza iniziale;
+2. SYN-ACK: il server risponde con SYN e ACK, confermando il SYN del client e inviando il
+   proprio numero di sequenza iniziale;
+3. ACK: il client conferma il SYN del server.
+
+Dopo questi tre passaggi la connessione e stabilita e puo iniziare il trasferimento dei dati.
+
+Il three-way handshaking serve per evitare comunicazioni non sincronizzate e per assicurare
+che entrambi gli host siano pronti a trasmettere e ricevere.
+
+### Protocollo a finestre scorrevoli
+
+TCP usa il meccanismo delle finestre scorrevoli per trasmettere piu segmenti senza dover
+attendere un ACK dopo ogni singolo invio.
+
+La finestra indica quanti byte o segmenti possono essere inviati senza ricevere conferma.
+Quando arrivano gli ACK, la finestra "scorre" in avanti e permette di inviare nuovi dati.
+
+Questo meccanismo migliora l'efficienza, perche mantiene attiva la trasmissione, e consente
+anche il controllo di flusso: il destinatario puo comunicare quanto spazio ha disponibile nel
+buffer tramite il campo Window Size.
+
+Se il ricevente ha poca memoria disponibile, puo ridurre la finestra; se invece puo ricevere
+piu dati, puo aumentarla.
+
+### Ritrasmissione e gestione del time-out
+
+Quando TCP invia un segmento, attiva un timer. Se l'ACK non arriva entro il tempo previsto
+dal RTO, il segmento viene considerato perso e viene ritrasmesso.
+
+La ritrasmissione puo avvenire anche quando il mittente riceve segnali che indicano la
+probabile perdita di un segmento, per esempio ACK duplicati. In ogni caso, lo scopo e
+ricostruire un flusso completo e ordinato.
+
+La gestione del time-out e importante per bilanciare affidabilita e prestazioni: TCP deve
+recuperare i dati persi senza appesantire inutilmente la rete con troppe ritrasmissioni.
+
+### Chiusura della connessione TCP
+
+La chiusura della connessione puo avvenire in due modi:
+
+- handshake a tre vie: quando la chiusura avviene contemporaneamente dalle due parti;
+- handshake a quattro vie: quando una parte chiude prima dell'altra.
+
+Nel caso piu comune, la chiusura a quattro vie avviene cosi:
+
+1. un host invia FIN per dire che non deve piu trasmettere dati;
+2. l'altro host risponde con ACK;
+3. quando anche il secondo host ha finito di trasmettere, invia FIN;
+4. il primo host risponde con ACK.
+
+Questa procedura esiste perche TCP e full-duplex: le due direzioni della comunicazione
+sono indipendenti, quindi una parte puo smettere di trasmettere mentre l'altra deve ancora
+inviare dati.
+
+### Differenze principali tra TCP e UDP
+
+| Aspetto | TCP | UDP |
+| --- | --- | --- |
+| Connessione | Connection oriented | Connectionless |
+| Affidabilita | Garantisce consegna ordinata | Non garantisce consegna |
+| Velocita | Piu lento per l'overhead | Piu veloce e leggero |
+| Header | Piu complesso | Semplice, 8 byte |
+| Ritrasmissioni | Si | No |
+| Ordine dei dati | Garantito | Non garantito |
+| Uso tipico | Web, posta, FTP, SSH | Streaming, DNS, VoIP, giochi online |
+
 ### Parole chiave
 
 Segmento, PDU, SAP, porta, socket, multiplexing, demultiplexing, buffering,
 affidabilita, servizio inaffidabile, connection oriented, connectionless, ACK,
-ritrasmissione, QoS, UDP, TCP, checksum, ICMP port unreachable, SYN, three-way
-handshaking.
+riscontro cumulativo, Sequence Number, RTT, RTO, finestra scorrevole, Window Size,
+QoS, UDP, TCP, MSS, MTU, checksum, ICMP port unreachable, SYN, FIN, RST,
+three-way handshaking.
 
 ### Da integrare con le presentazioni
 
-- Struttura dell'header TCP.
-- Three-way handshaking in dettaglio.
-- Chiusura della connessione TCP.
-- Controllo di flusso e controllo di congestione in TCP.
 - Esempi completi di domande tipiche d'esame.
 
 ---
@@ -702,7 +899,7 @@ progettazione di rete.
 ## Materiali da aggiungere modulo per modulo
 
 - Presentazione Modulo I - Trasporto e UDP: integrata.
-- Presentazione Modulo I - TCP e three-way handshaking: da integrare, se presente.
+- Presentazione Modulo I - Trasferimento affidabile e TCP: integrata.
 - Presentazione Modulo II: da integrare.
 - Presentazione Modulo III: da integrare.
 - Presentazione Modulo IV: da integrare.
