@@ -715,6 +715,174 @@ Esempio:
 - `www.scuola.it`: nome dell'host;
 - `/info/corsi.html`: percorso e file della risorsa.
 
+### Il protocollo HTTP
+
+HTTP, HyperText Transfer Protocol, e il protocollo di livello applicativo usato per
+trasferire risorse web da un server a un client. Nell'uso comune il client e il browser,
+mentre il server e il web server che ospita il sito.
+
+HTTP gestisce:
+
+- le richieste inviate dal client al server;
+- le risposte inviate dal server al client;
+- il trasferimento di pagine HTML, immagini, file CSS, script e altri oggetti web.
+
+Il WWW puo essere riassunto come l'insieme di tre elementi:
+
+- URL, per identificare e localizzare le risorse;
+- HTTP, per trasferire le risorse;
+- HTML, per descrivere la struttura delle pagine web.
+
+HTTP usa normalmente TCP. Il client apre una connessione TCP verso il server sulla porta
+80, invia una richiesta HTTP, riceve una risposta HTTP e poi la connessione puo essere
+chiusa o mantenuta aperta, a seconda della versione e della configurazione.
+
+### HTTP e stateless
+
+HTTP e un protocollo stateless, cioe senza stato. Significa che, a livello di protocollo, ogni
+richiesta e indipendente dalle precedenti: il server non conserva automaticamente memoria
+di quello che e stato scambiato prima con lo stesso client.
+
+Questa caratteristica rende HTTP semplice, ma per applicazioni web piu complesse servono
+meccanismi aggiuntivi, come cookie e sessioni, che permettono di riconoscere un utente e
+mantenere informazioni tra piu richieste.
+
+### Versioni di HTTP e connessioni
+
+Le versioni principali citate sono:
+
+- HTTP/1.0: usa connessioni non persistenti; dopo una richiesta e una risposta, la
+  connessione TCP viene chiusa;
+- HTTP/1.1: introduce l'uso comune di connessioni persistenti, quindi piu richieste e
+  risposte possono usare la stessa connessione TCP;
+- HTTP/2: migliora le prestazioni con compressione degli header e multiplexing di piu
+  richieste/risposte sulla stessa connessione;
+- HTTP/3: versione piu recente, basata su QUIC invece che direttamente su TCP, pensata
+  per ridurre la latenza e migliorare le prestazioni.
+
+Con HTTP/1.0, se una pagina contiene un file HTML e molte immagini, possono essere
+necessarie piu connessioni TCP. Con HTTP/1.1 la stessa connessione puo restare aperta e
+trasportare piu coppie richiesta/risposta, riducendo il tempo complessivo.
+
+Il pipelining, previsto in HTTP/1.1, permette al client di inviare piu richieste prima di aver
+ricevuto tutte le risposte. Le risposte devono pero arrivare nello stesso ordine delle
+richieste.
+
+### Messaggi HTTP: richiesta e risposta
+
+HTTP funziona con uno schema request-response:
+
+1. il client invia una richiesta;
+2. il server interpreta la richiesta;
+3. il server restituisce una risposta con un codice di stato e, spesso, un corpo contenente
+   la risorsa richiesta.
+
+Una richiesta HTTP contiene in genere:
+
+- request line, con metodo, risorsa richiesta e versione HTTP;
+- header, cioe righe con informazioni aggiuntive;
+- body opzionale, usato ad esempio con POST.
+
+Una risposta HTTP contiene in genere:
+
+- status line, con versione HTTP, codice di stato e frase descrittiva;
+- header opzionali;
+- body opzionale, spesso contenente la pagina HTML o la risorsa richiesta.
+
+Esempio semplificato di risposta:
+
+```text
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 6821
+
+<html>...</html>
+```
+
+### Metodi HTTP
+
+Un metodo HTTP e un comando che il client invia al server per indicare quale operazione
+vuole eseguire sulla risorsa.
+
+| Metodo | Significato |
+| --- | --- |
+| GET | Richiede una risorsa, per esempio una pagina o un'immagine |
+| HEAD | Richiede solo gli header, senza il body della risorsa |
+| POST | Invia dati al server, spesso tramite un form |
+| PUT | Carica o sostituisce una risorsa sul server, se autorizzato |
+| DELETE | Richiede la cancellazione di una risorsa, se autorizzato |
+| OPTIONS | Chiede quali metodi o opzioni sono supportati |
+| TRACE | Metodo diagnostico per tracciare la richiesta |
+| CONNECT | Richiede una connessione tramite proxy, spesso per creare un tunnel |
+
+GET e il metodo piu comune: viene usato quando si clicca un link o si inserisce un URL nel
+browser. POST viene usato spesso quando si inviano dati tramite un modulo, per esempio
+login, ricerca o registrazione.
+
+PUT e DELETE sui server pubblici sono normalmente disabilitati o protetti, per evitare che
+utenti non autorizzati possano modificare o cancellare risorse.
+
+### Codici di stato HTTP
+
+Il codice di stato e un numero di tre cifre presente nella risposta del server. La prima cifra
+indica la classe della risposta.
+
+| Classe | Significato |
+| --- | --- |
+| 1xx | Informational: risposta provvisoria |
+| 2xx | Successful: richiesta ricevuta, compresa e accettata |
+| 3xx | Redirection: servono altre azioni del client |
+| 4xx | Client error: errore nella richiesta del client |
+| 5xx | Server error: errore del server |
+
+Esempi importanti:
+
+- 200 OK: richiesta eseguita correttamente;
+- 201 Created: risorsa creata;
+- 301 Moved Permanently: risorsa spostata in modo permanente;
+- 400 Bad Request: richiesta sintatticamente errata;
+- 401 Unauthorized: richiesta autenticazione;
+- 403 Forbidden: accesso vietato;
+- 404 Not Found: risorsa non trovata;
+- 405 Method Not Allowed: metodo non consentito;
+- 500 Internal Server Error: errore interno del server;
+- 501 Not Implemented: metodo non implementato.
+
+### HTTPS
+
+HTTPS, HyperText Transfer Protocol Secure, e la versione sicura di HTTP. Dal punto di
+vista dei messaggi applicativi il funzionamento rimane simile a HTTP, ma la comunicazione
+tra browser e server viene protetta tramite TLS.
+
+HTTPS serve soprattutto a:
+
+- cifrare i dati scambiati, impedendo a terzi di leggerli facilmente;
+- autenticare il server tramite un certificato digitale;
+- proteggere credenziali, dati personali, pagamenti e moduli inviati online.
+
+In pratica, quando un sito usa HTTPS, il browser comunica con il server usando un canale
+protetto. I dettagli di TLS, certificati digitali e crittografia vengono approfonditi nei moduli
+di sicurezza.
+
+### Autenticazione HTTP
+
+HTTP puo prevedere anche meccanismi di autenticazione per limitare l'accesso a certe
+risorse.
+
+Il caso piu semplice e che il server risponda con il codice 401 Unauthorized e chieda al
+browser username e password. Se le credenziali sono corrette, il server invia la risorsa.
+
+Tecniche citate:
+
+- filtro su indirizzi IP: consente o nega l'accesso in base all'indirizzo IP del client;
+- Basic Authentication: invia username e password codificati in Base64; e semplice ma non
+  sicura se non usata con HTTPS;
+- Digest Authentication: non invia direttamente la password, ma un digest calcolato con
+  funzioni hash.
+
+Per il ripasso basta ricordare che l'autenticazione HTTP controlla l'accesso alle risorse,
+mentre HTTPS protegge il canale di comunicazione.
+
 ### Il protocollo FTP
 
 FTP, File Transfer Protocol, e un protocollo applicativo usato per trasferire file tra
@@ -1132,8 +1300,9 @@ Alcuni comandi utili per diagnosi e prove di rete:
 
 Applicazione distribuita, processo, user agent, protocollo applicativo, client-server,
 server farm, virtualizzazione, peer-to-peer, P2P centralizzato, P2P ibrido, super-peer,
-API, socket, HTTP, HTTPS, WWW, browser, web server, URI, URL, cache, FTP, FTPS,
-SFTP, upload, download, modalita attiva, modalita passiva, e-mail, account, mailbox,
+API, socket, HTTP, HTTPS, stateless, request, response, metodo HTTP, GET, POST,
+PUT, DELETE, codice di stato, cookie, sessione, WWW, browser, web server, URI, URN,
+URL, cache, FTP, FTPS, SFTP, upload, download, modalita attiva, modalita passiva, e-mail, account, mailbox,
 MUA, MTA, MDA, SMTP, POP3, IMAP, MIME, Base64, DNS, resolver, name server, root
 server, TLD, authoritative server, DNS locale, cache DNS, TTL, record A, AAAA, CNAME,
 MX, NS, PTR, Telnet, SSH, DHCP, lease, risoluzione dei nomi.
@@ -1141,7 +1310,6 @@ MX, NS, PTR, Telnet, SSH, DHCP, lease, risoluzione dei nomi.
 ### Da integrare con le presentazioni
 
 - Sequenza DORA del DHCP.
-- Metodi e codici di stato HTTP.
 - Esempi Packet Tracer su DHCP, DNS, SMTP/POP3 e WWW.
 
 ---
@@ -1508,7 +1676,8 @@ progettazione di rete.
 - Presentazione Modulo I - Trasferimento affidabile e TCP: integrata.
 - Presentazione Modulo II - Livello applicazioni, WWW e FTP: integrata.
 - Presentazione Modulo II - Email, DNS e Telnet/SSH: integrata.
-- Presentazione Modulo II - DHCP e HTTP dettagliato: da integrare, se presenti.
+- Presentazione Modulo II - Protocollo HTTP e cenni HTTPS: integrata.
+- Presentazione Modulo II - DHCP: da integrare, se presente.
 - Presentazione Modulo III: da integrare.
 - Presentazione Modulo IV: da integrare.
 - Presentazione Modulo V: da integrare.
